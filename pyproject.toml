@@ -1,0 +1,94 @@
+[tool.poetry]
+name = "nastran_to_kratos"
+version = "0.1.0"
+description = "A tool for using structural models stored in the Nastran in KratosMultiphysics"
+authors = ["Tobias Klockau", "Tobias Siemer"]
+readme = "README.md"
+repository = "https://gitlab.lrz.de/tobias_group/nastran_to_kratos"
+
+[tool.poetry.dependencies]
+python = "^3.10, <4.0"
+
+[tool.poetry.group.dev.dependencies]
+black = "<25.0"
+mypy-extensions = "<2.0"
+pylint = "<4.0"
+
+[tool.poetry.group.test.dependencies]
+pytest = "<9.0"
+
+[tool.black]
+target-version = ['py312']
+line-length = 101
+
+[tool.docformatter]
+wrap-descriptions = 101
+wrap-summaries = 79
+
+[tool.isort]
+profile = "black"
+line_length = 101
+
+[tool.mypy]
+check_untyped_defs = true
+no_implicit_optional = true
+show_error_codes = true
+warn_redundant_casts = true
+warn_unreachable = true
+python_version = "3.12"
+ignore_missing_imports = true
+disable_error_code = ["call-arg"]
+
+[tool.pydocstyle]
+convention = "google"
+add-select = [
+    "D212", # Multi-line docstring summary should start at the first line
+    "D402", # First line should not be the functions "signature"
+    "D417", # Missing argument descriptions in the docstring
+]
+add-ignore = [
+    "D100", # Missing docstring in public module
+    "D201", # No blank lines allowed before function docstring  # auto-formatting
+    "D202", # No blank lines allowed after function docstring  # auto-formatting
+    "D203", # 1 blank line required before class docstring  # auto-formatting
+    "D204", # 1 blank line required after class docstring  # auto-formatting
+    "D209", # Multi-line docstring closing quotes should be on a separate line
+    "D211", # No blank lines allowed before class docstring  # auto-formatting
+    "D213", # Multi-line docstring summary should start at the second line
+    "D301", # No backslashes allowed in docstring
+]
+
+[tool.pylint.master]
+max-line-length = 101
+ignore-paths = "tests/*"
+
+[tool.pylint.messages_control]
+disable = [
+    "arguments-renamed",
+    "global-statement",
+    "invalid-name",
+    "no-else-return",                         # using else returns is more readible imo
+    "protected-access",                       # class comparisons raised as false positive
+    "redefined-builtin",                      # the domain is full of builtin-names (object, type, format, ...)
+    "too-few-public-methods",                 # does not contribute to code quality imo
+    "too-many-arguments",                     # 6 as a limit is too low
+    "too-many-instance-attributes",           # classes mirror OpenLABEL, therefore the number of fields is set
+    "unidiomatic-typecheck",                  # type() is necessary in some cases
+    "unspecified-encoding",                   # default encoding is sufficient in all cases
+    "unsupported-membership-test",            # raise false positives for dicts
+    "global-variable-not-assigned",           # raises false positive when global variable is a dict and items are assigned
+    "unused-argument",                        # prevents commiting of functions that are not entirely implemented
+    "eval-used",                              # eval is needed for the tick rendering
+    "use-implicit-booleaness-not-comparison", # is more readible imo
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+xfail_strict = true
+
+[tool.poetry-dynamic-versioning]
+enable = true
+
+[build-system]
+requires = ["poetry-core>=1.0.0", "poetry-dynamic-versioning>=1.0.0,<2.0.0"]
+build-backend = "poetry_dynamic_versioning.backend"
