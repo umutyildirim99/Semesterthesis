@@ -15,5 +15,5 @@ pre-commit:
         - $POETRY_HOME/bin/pip install poetry
         - $POETRY_HOME/bin/poetry install
     script:
-        - pre-commit
+        - pre-commit run --all-files
     allow_failure: false
