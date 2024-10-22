@@ -1,0 +1,19 @@
+# This file defines the the ci pipelines that are run in gitlab every time a commit is pushed.
+
+stages:
+    - pre-commit
+
+pre-commit:
+    stage: pre-commit
+    image: python:3.12
+    before_script:
+        - pip install pre-commit
+        - pre-commit install
+
+        - export POETRY_HOME=/opt/poetry
+        - python3 -m venv $POETRY_HOME
+        - $POETRY_HOME/bin/pip install poetry
+        - $POETRY_HOME/bin/poetry install
+    script:
+        - pre-commit
+    allow_failure: false

@@ -1,0 +1,38 @@
+[tool.poetry]
+name = "nastran_to_kratos"
+version = "0.1.0"
+description = "A tool for using structural models stored in the Nastran in KratosMultiphysics"
+authors = ["Tobias Klockau", "Tobias Siemer"]
+readme = "README.md"
+repository = "https://gitlab.lrz.de/tobias_group/nastran_to_kratos"
+
+[tool.poetry.dependencies]
+python = "^3.10, <4.0"
+
+[tool.poetry.group.dev.dependencies]
+mypy-extensions = "<2.0"
+ruff = "<1.0"
+
+[tool.poetry.group.test.dependencies]
+pytest = "<9.0"
+
+[tool.ruff]
+line-length = 101
+exclude = ["test/*"]
+
+[tool.mypy]
+check_untyped_defs = true
+no_implicit_optional = true
+show_error_codes = true
+warn_redundant_casts = true
+warn_unreachable = true
+python_version = "3.12"
+ignore_missing_imports = true
+disable_error_code = ["call-arg"]
+
+[tool.pytest.ini_options]
+testpaths = ["test"]
+xfail_strict = true
+
+[tool.poetry-dynamic-versioning]
+enable = true
