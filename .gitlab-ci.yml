@@ -10,10 +10,10 @@ pre-commit:
         - pip install pre-commit
         - pre-commit install
 
-        - export POETRY_HOME=/opt/poetry
-        - python3 -m venv $POETRY_HOME
-        - $POETRY_HOME/bin/pip install poetry
-        - $POETRY_HOME/bin/poetry install
+        - python3 -m venv .venv
+        - source .venv/bin/activate
+        - pip install poetry
+        - poetry install
     script:
         - pre-commit run --all-files
     allow_failure: false
