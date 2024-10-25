@@ -37,5 +37,12 @@ def test_from_file_content__ignore_empty_lines():
     assert actual == NastranSimulation.empty()
 
 
+def test_from_file_content__ignore_sol():
+    file_content = ["SOL 101"]
+
+    actual = NastranSimulation.from_file_content(file_content)
+    assert actual == NastranSimulation.empty()
+
+
 if __name__ == "__main__":
     pytest.main([__file__, "-v"])

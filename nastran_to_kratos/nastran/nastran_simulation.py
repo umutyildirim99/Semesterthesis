@@ -40,4 +40,7 @@ def _line_should_be_ignored(line: str) -> bool:
     if line.startswith("$"):
         return True
 
+    if line.startswith("SOL"):
+        return True
+
     return False
