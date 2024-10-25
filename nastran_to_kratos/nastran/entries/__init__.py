@@ -4,5 +4,6 @@ from .crod import Crod
 from .force import Force
 from .grid import Grid
 from .prod import Prod
+from .spc import Spc
 
-__all__ = ["Crod", "Force", "Grid", "Prod"]
+__all__ = ["Crod", "Force", "Grid", "Prod", "Spc"]
