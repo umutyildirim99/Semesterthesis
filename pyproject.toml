@@ -18,9 +18,9 @@ pytest = "<9.0"
 
 [tool.ruff]
 line-length = 101
-exclude = ["test/*"]
 
 [tool.ruff.lint]
+exclude = ["test/*"]
 select = ["ALL"]
 ignore = [
     "D100",    # imo no docstrings are necessary in public modules
