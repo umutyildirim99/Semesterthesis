@@ -3,7 +3,13 @@ from __future__ import annotations
 from dataclasses import dataclass
 
 from ._nastran_entry import _NastranEntry
+from .crod import Crod
 from .grid import Grid
+
+ENTRY_CLASS_MAPPING: dict[str, type[_NastranEntry]] = {
+    "GRID": Grid,
+    "CROD": Crod,
+}
 
 
 @dataclass
@@ -27,7 +33,9 @@ class NastranSimulation:
                 continue
 
             line_split_into_fields = [line[i : i + 8] for i in range(0, len(line), 8)]
-            simulation.entries.append(Grid.read(line_split_into_fields))
+
+            entry_class = ENTRY_CLASS_MAPPING[line_split_into_fields[0].strip()]
+            simulation.entries.append(entry_class.read(line_split_into_fields))
 
         return simulation
 

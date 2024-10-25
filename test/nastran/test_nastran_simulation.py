@@ -1,5 +1,6 @@
 from nastran_to_kratos.nastran.nastran_simulation import NastranSimulation
 from nastran_to_kratos.nastran.grid import Grid
+from nastran_to_kratos.nastran.crod import Crod
 
 import pytest
 
@@ -20,6 +21,15 @@ def test_from_file_content__grid_entry():
     actual = NastranSimulation.from_file_content(file_content)
     assert actual.entries == [
         Grid.read(["GRID    ", "       2", "        ", "  1000.0", "     0.0", "     0.0"])
+    ]
+
+
+def test_from_file_content__crod_entry():
+    file_content = ["CROD          12      13      21      23"]
+
+    actual = NastranSimulation.from_file_content(file_content)
+    assert actual.entries == [
+        Crod.read(["CROD    ", "      12", "      13", "      21", "      23"])
     ]
 
 
