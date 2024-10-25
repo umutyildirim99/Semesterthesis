@@ -1,4 +1,7 @@
-from nastran_to_kratos.nastran.nastran_simulation import NastranSimulation
+from nastran_to_kratos.nastran.nastran_simulation import (
+    NastranSimulation,
+    EntryIdentifyerNotSupportedError,
+)
 from nastran_to_kratos.nastran.grid import Grid
 from nastran_to_kratos.nastran.crod import Crod
 
@@ -13,6 +16,13 @@ def test_from_file_content__multiple_entries():
 
     actual = NastranSimulation.from_file_content(file_content)
     assert len(actual.entries) == 2
+
+
+def test_from_file_content__unsupported_entry():
+    file_content = ["BADWORD "]
+
+    with pytest.raises(EntryIdentifyerNotSupportedError):
+        NastranSimulation.from_file_content(file_content)
 
 
 def test_from_file_content__grid_entry():
