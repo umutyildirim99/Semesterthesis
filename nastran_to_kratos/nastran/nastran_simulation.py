@@ -43,4 +43,7 @@ def _line_should_be_ignored(line: str) -> bool:
     if line.startswith("SOL"):
         return True
 
+    if line.startswith("CEND"):
+        return True
+
     return False

@@ -44,5 +44,12 @@ def test_from_file_content__ignore_sol():
     assert actual == NastranSimulation.empty()
 
 
+def test_from_file_content__ignore_cend():
+    file_content = ["CEND"]
+
+    actual = NastranSimulation.from_file_content(file_content)
+    assert actual == NastranSimulation.empty()
+
+
 if __name__ == "__main__":
     pytest.main([__file__, "-v"])
