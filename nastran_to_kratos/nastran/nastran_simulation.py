@@ -37,13 +37,7 @@ def _line_should_be_ignored(line: str) -> bool:
     if line == "":
         return True
 
-    if line.startswith("$"):
-        return True
-
-    if line.startswith("SOL"):
-        return True
-
-    if line.startswith("CEND"):
+    if line.startswith(("$", "SOL", "CEND")):
         return True
 
     return False
