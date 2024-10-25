@@ -2,8 +2,7 @@ from nastran_to_kratos.nastran.nastran_simulation import (
     NastranSimulation,
     EntryIdentifyerNotSupportedError,
 )
-from nastran_to_kratos.nastran.grid import Grid
-from nastran_to_kratos.nastran.crod import Crod
+from nastran_to_kratos.nastran.entries import Grid, Crod
 
 import pytest
 

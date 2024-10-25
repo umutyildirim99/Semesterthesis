@@ -1,4 +1,4 @@
-from nastran_to_kratos.nastran.grid import Grid
+from nastran_to_kratos.nastran.entries import Grid
 
 import pytest
 
