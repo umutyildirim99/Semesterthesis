@@ -7,7 +7,7 @@ readme = "README.md"
 repository = "https://gitlab.lrz.de/tobias_group/nastran_to_kratos"
 
 [tool.poetry.dependencies]
-python = "^3.10, <4.0"
+python = "^3.12, <4.0"
 
 [tool.poetry.group.dev.dependencies]
 mypy-extensions = "<2.0"
@@ -19,6 +19,14 @@ pytest = "<9.0"
 [tool.ruff]
 line-length = 101
 exclude = ["test/*"]
+
+[tool.ruff.lint]
+select = ["ALL"]
+ignore = [
+    "D100",  # imo no docstrings are necessary in public modules
+    "D203",  # incompatible with D211
+    "D213",  # incompatible with D212
+]
 
 [tool.mypy]
 check_untyped_defs = true
