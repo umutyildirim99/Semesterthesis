@@ -18,6 +18,9 @@ class NastranSimulation:
         simulation = NastranSimulation([])
 
         for line in file_content:
+            if line.startswith("$"):
+                continue
+
             line_split_into_fields = [line[i : i + 8] for i in range(0, len(line), 8)]
             simulation.entries.append(Grid.read(line_split_into_fields))
 
