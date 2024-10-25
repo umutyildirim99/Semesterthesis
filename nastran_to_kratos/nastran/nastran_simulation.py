@@ -1,0 +1,24 @@
+from __future__ import annotations
+
+from dataclasses import dataclass
+
+from ._nastran_entry import _NastranEntry
+from .grid import Grid
+
+
+@dataclass
+class NastranSimulation:
+    """All relevant contents of a nastran file."""
+
+    entries: list[_NastranEntry]
+
+    @classmethod
+    def from_file_content(cls, file_content: list[str]) -> NastranSimulation:
+        """Construct this class from the contents of a nastran file."""
+        simulation = NastranSimulation([])
+
+        for line in file_content:
+            line_split_into_fields = [line[i : i + 8] for i in range(0, len(line), 8)]
+            simulation.entries.append(Grid.read(line_split_into_fields))
+
+        return simulation

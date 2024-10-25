@@ -23,9 +23,11 @@ exclude = ["test/*"]
 [tool.ruff.lint]
 select = ["ALL"]
 ignore = [
-    "D100",  # imo no docstrings are necessary in public modules
-    "D203",  # incompatible with D211
-    "D213",  # incompatible with D212
+    "D100",    # imo no docstrings are necessary in public modules
+    "D203",    # incompatible with D211
+    "D213",    # incompatible with D212
+
+    "TCH001",  # adds hard to understand compexity without providing a benefit for smaller projects
 ]
 
 [tool.mypy]
