@@ -2,5 +2,6 @@
 
 from .crod import Crod
 from .grid import Grid
+from .prod import Prod
 
-__all__ = ["Crod", "Grid"]
+__all__ = ["Crod", "Grid", "Prod"]
