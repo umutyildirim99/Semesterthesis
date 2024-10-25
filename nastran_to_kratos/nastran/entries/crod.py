@@ -23,7 +23,7 @@ class Crod(_NastranEntry):
 
     @classmethod
     def read(cls, raw_entry: list[str]) -> Crod:
-        """Construct a crod from the entry in a nastran file."""
+        """Construct a Crod from the entry in a nastran file."""
         return Crod(
             eid=int(raw_entry[1]),
             pid=cls._read_optional_field(raw_entry, 2, int, None),

@@ -18,7 +18,7 @@ class Prod(_NastranEntry):
 
     @classmethod
     def read(cls, raw_entry: list[str]) -> Prod:
-        """Construct a prod from the entry in a nastran file."""
+        """Construct a Prod from the entry in a nastran file."""
         return Prod(
             pid=int(raw_entry[1]),
             mid=int(raw_entry[2]),

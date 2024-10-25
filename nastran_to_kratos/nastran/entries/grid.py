@@ -37,7 +37,7 @@ class Grid(_NastranEntry):
 
     @classmethod
     def read(cls, raw_entry: list[str]) -> Grid:
-        """Construct a grid from the entry in a nastran file."""
+        """Construct a Grid from the entry in a nastran file."""
         return Grid(
             id=int(raw_entry[1]),
             cp=cls._read_optional_field(raw_entry, 2, int, None),
