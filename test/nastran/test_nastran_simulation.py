@@ -27,14 +27,14 @@ def test_from_file_content__ignore_dollar_signs():
     file_content = ["$GRID          2          1000.0     0.0     0.0"]
 
     actual = NastranSimulation.from_file_content(file_content)
-    assert actual.entries == []
+    assert actual == NastranSimulation.empty()
 
 
 def test_from_file_content__ignore_empty_lines():
     file_content = [""]
 
     actual = NastranSimulation.from_file_content(file_content)
-    assert actual.entries == []
+    assert actual == NastranSimulation.empty()
 
 
 if __name__ == "__main__":

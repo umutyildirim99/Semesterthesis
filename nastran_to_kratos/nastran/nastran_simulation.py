@@ -13,9 +13,14 @@ class NastranSimulation:
     entries: list[_NastranEntry]
 
     @classmethod
+    def empty(cls) -> NastranSimulation:
+        """Construct an empty NastranSimulation instance."""
+        return NastranSimulation(entries=[])
+
+    @classmethod
     def from_file_content(cls, file_content: list[str]) -> NastranSimulation:
         """Construct this class from the contents of a nastran file."""
-        simulation = NastranSimulation([])
+        simulation = NastranSimulation.empty()
 
         for line in file_content:
             if _line_should_be_ignored(line):
