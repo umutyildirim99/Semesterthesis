@@ -8,7 +8,7 @@ from nastran_to_kratos.nastran.crod import Crod
 import pytest
 
 
-def test_from_file_content__multiple_entries():
+def test_read_content__multiple_entries():
     file_content = [
         "GRID           2          1000.0     0.0     0.0",
         "GRID           2       5  1000.0     0.0     2.0       3     123       7",
@@ -18,14 +18,14 @@ def test_from_file_content__multiple_entries():
     assert len(actual.entries) == 2
 
 
-def test_from_file_content__unsupported_entry():
+def test_read_content__unsupported_entry():
     file_content = ["BADWORD "]
 
     with pytest.raises(EntryIdentifyerNotSupportedError):
         NastranSimulation.from_file_content(file_content)
 
 
-def test_from_file_content__grid_entry():
+def test_read_content__grid_entry():
     file_content = ["GRID           2          1000.0     0.0     0.0"]
 
     actual = NastranSimulation.from_file_content(file_content)
@@ -34,7 +34,7 @@ def test_from_file_content__grid_entry():
     ]
 
 
-def test_from_file_content__crod_entry():
+def test_read_content__crod_entry():
     file_content = ["CROD          12      13      21      23"]
 
     actual = NastranSimulation.from_file_content(file_content)
@@ -43,42 +43,42 @@ def test_from_file_content__crod_entry():
     ]
 
 
-def test_from_file_content__ignore_dollar_signs():
+def test_read_content__ignore_dollar_signs():
     file_content = ["$GRID          2          1000.0     0.0     0.0"]
 
     actual = NastranSimulation.from_file_content(file_content)
     assert actual == NastranSimulation.empty()
 
 
-def test_from_file_content__ignore_empty_lines():
+def test_read_content__ignore_empty_lines():
     file_content = [""]
 
     actual = NastranSimulation.from_file_content(file_content)
     assert actual == NastranSimulation.empty()
 
 
-def test_from_file_content__ignore_sol():
+def test_read_content__ignore_sol():
     file_content = ["SOL 101"]
 
     actual = NastranSimulation.from_file_content(file_content)
     assert actual == NastranSimulation.empty()
 
 
-def test_from_file_content__ignore_cend():
+def test_read_content__ignore_cend():
     file_content = ["CEND"]
 
     actual = NastranSimulation.from_file_content(file_content)
     assert actual == NastranSimulation.empty()
 
 
-def test_from_file_content__ignore_begin():
+def test_read_content__ignore_begin():
     file_content = ["BEGIN"]
 
     actual = NastranSimulation.from_file_content(file_content)
     assert actual == NastranSimulation.empty()
 
 
-def test_from_file_content__ignore_enddata():
+def test_read_content__ignore_enddata():
     file_content = ["ENDDATA"]
 
     actual = NastranSimulation.from_file_content(file_content)
