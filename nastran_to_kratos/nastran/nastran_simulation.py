@@ -2,12 +2,13 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 
-from .entries import Crod, Grid
+from .entries import Crod, Grid, Prod
 from .entries._nastran_entry import _NastranEntry
 
 ENTRY_CLASS_MAPPING: dict[str, type[_NastranEntry]] = {
     "GRID": Grid,
     "CROD": Crod,
+    "PROD": Prod,
 }
 
 

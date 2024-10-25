@@ -2,7 +2,7 @@ from nastran_to_kratos.nastran.nastran_simulation import (
     NastranSimulation,
     EntryIdentifyerNotSupportedError,
 )
-from nastran_to_kratos.nastran.entries import Grid, Crod
+from nastran_to_kratos.nastran.entries import Grid, Crod, Prod
 
 import pytest
 
@@ -40,6 +40,13 @@ def test_read_content__crod_entry():
     assert actual.entries == [
         Crod.read(["CROD    ", "      12", "      13", "      21", "      23"])
     ]
+
+
+def test_read_content__prod_entry():
+    file_content = ["PROD          17      23    42.6   17.92  4.2356     0.5"]
+
+    actual = NastranSimulation.from_file_content(file_content)
+    assert actual.entries == [Prod.read(["PROD", "17", "23", "42.6", "17.92", "4.2356", "0.5"])]
 
 
 def test_read_content__ignore_dollar_signs():
