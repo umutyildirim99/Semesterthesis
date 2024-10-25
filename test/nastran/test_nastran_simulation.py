@@ -58,5 +58,12 @@ def test_from_file_content__ignore_begin():
     assert actual == NastranSimulation.empty()
 
 
+def test_from_file_content__ignore_enddata():
+    file_content = ["ENDDATA"]
+
+    actual = NastranSimulation.from_file_content(file_content)
+    assert actual == NastranSimulation.empty()
+
+
 if __name__ == "__main__":
     pytest.main([__file__, "-v"])
