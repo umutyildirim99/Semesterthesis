@@ -50,6 +50,13 @@ def test_from_file_content__load():
     assert actual == Subcase(load=1)
 
 
+def test_from_file_content__spc():
+    file_content = ["  SPC = 2"]
+
+    actual = Subcase.from_file_content(file_content)
+    assert actual == Subcase(spc=2)
+
+
 def test_from_file_content__subtitle():
     file_content = ["  SUBTITLE = LS_xForce"]
 
