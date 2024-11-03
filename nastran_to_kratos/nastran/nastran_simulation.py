@@ -19,10 +19,8 @@ class NastranSimulation:
         """Construct this class from the contents of a nastran file."""
         lines_sorted_by_section: dict[str, list[str]] = {"unassigned": []}
 
-        stripped_file_content = [line.strip() for line in file_content]
-
         current_section_id = "unassigned"
-        for line in stripped_file_content:
+        for line in _remove_linebreak_from_file_content(file_content):
             if "Case Control Cards" in line:
                 current_section_id = "case_control"
                 lines_sorted_by_section[current_section_id] = []
@@ -31,12 +29,8 @@ class NastranSimulation:
                 current_section_id = "bulk_data"
                 lines_sorted_by_section[current_section_id] = []
 
-            line_is_empty = line == ""
-            line_is_a_comment = line.startswith("$")
-            if line_is_empty or line_is_a_comment:
-                continue
-
-            lines_sorted_by_section[current_section_id].append(line)
+            if not _line_should_be_skipped(line):
+                lines_sorted_by_section[current_section_id].append(line)
 
         return NastranSimulation(
             case_control=CaseControlSection.from_file_content(
@@ -50,3 +44,21 @@ class NastranSimulation:
         """Read the contents of a path pointing to a file and construct this class from it."""
         with path.open() as nastran_file:
             return NastranSimulation.from_file_content(nastran_file.readlines())
+
+
+def _remove_linebreak_from_file_content(file_content: list[str]) -> list[str]:
+    stripped_file_content = []
+    for line in file_content:
+        if line.endswith("\n"):
+            stripped_file_content.append(line[:-1])
+        else:
+            stripped_file_content.append(line)
+
+    return stripped_file_content
+
+
+def _line_should_be_skipped(line: str) -> bool:
+    line_is_empty = line == ""
+    line_is_a_comment = line.startswith("$")
+
+    return line_is_empty or line_is_a_comment
