@@ -4,14 +4,6 @@ from dataclasses import dataclass
 
 from .entries import Crod, Force, Grid, Prod, Spc, _BulkDataEntry
 
-ENTRY_CLASS_MAPPING: dict[str, type[_BulkDataEntry]] = {
-    "GRID": Grid,
-    "CROD": Crod,
-    "PROD": Prod,
-    "FORCE": Force,
-    "SPC": Spc,
-}
-
 
 @dataclass
 class BulkDataSection:
@@ -30,33 +22,34 @@ class BulkDataSection:
         bulk_data = BulkDataSection.empty()
 
         for line in file_content:
-            if _line_should_be_ignored(line):
-                continue
+            entry_identifyer = line.strip().split(" ")[0].strip()
 
-            line_split_into_fields = [line[i : i + 8] for i in range(0, len(line), 8)]
-            entry_class = _get_entry_class(line_split_into_fields)
-            bulk_data.entries.append(entry_class.from_file_content(line_split_into_fields))
+            processed_entry: _BulkDataEntry | None = None
+            match entry_identifyer:
+                case "CROD":
+                    processed_entry = Crod.from_file_content(_split_short_line(line))
+                case "FORCE":
+                    processed_entry = Force.from_file_content(_split_short_line(line))
+                case "GRID":
+                    processed_entry = Grid.from_file_content(_split_short_line(line))
+                case "PROD":
+                    processed_entry = Prod.from_file_content(_split_short_line(line))
+                case "SPC":
+                    processed_entry = Spc.from_file_content(_split_short_line(line))
+
+                case "SOL" | "CEND" | "BEGIN" | "ENDDATA" | "MAT1":
+                    pass
+                case _:
+                    raise EntryIdentifyerNotSupportedError(entry_identifyer)
+
+            if processed_entry is not None:
+                bulk_data.entries.append(processed_entry)
 
         return bulk_data
 
 
-def _line_should_be_ignored(line: str) -> bool:
-    """Return wether a given line should be skipped (e.g. if it is a comment)."""
-    if line == "":
-        return True
-
-    if line.startswith(("$", "SOL", "CEND", "BEGIN", "ENDDATA")):
-        return True
-
-    return False
-
-
-def _get_entry_class(line_split_into_fields: list[str]) -> type[_BulkDataEntry]:
-    entry_identifyer = line_split_into_fields[0].strip()
-    try:
-        return ENTRY_CLASS_MAPPING[entry_identifyer]
-    except KeyError:
-        raise EntryIdentifyerNotSupportedError(entry_identifyer) from None
+def _split_short_line(line: str) -> list[str]:
+    return [line[i : i + 8] for i in range(0, len(line), 8)]
 
 
 class EntryIdentifyerNotSupportedError(Exception):
