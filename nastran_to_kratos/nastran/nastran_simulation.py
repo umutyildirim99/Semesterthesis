@@ -3,9 +3,9 @@ from __future__ import annotations
 from dataclasses import dataclass
 
 from .bulk_data import Crod, Force, Grid, Prod, Spc
-from .bulk_data._nastran_entry import _NastranEntry
+from .bulk_data._nastran_bulk_data import _NastranBulkData
 
-ENTRY_CLASS_MAPPING: dict[str, type[_NastranEntry]] = {
+ENTRY_CLASS_MAPPING: dict[str, type[_NastranBulkData]] = {
     "GRID": Grid,
     "CROD": Crod,
     "PROD": Prod,
@@ -18,7 +18,7 @@ ENTRY_CLASS_MAPPING: dict[str, type[_NastranEntry]] = {
 class NastranSimulation:
     """All relevant contents of a nastran file."""
 
-    bulk_data: list[_NastranEntry]
+    bulk_data: list[_NastranBulkData]
 
     @classmethod
     def empty(cls) -> NastranSimulation:
@@ -52,7 +52,7 @@ def _line_should_be_ignored(line: str) -> bool:
     return False
 
 
-def _get_entry_class(line_split_into_fields: list[str]) -> type[_NastranEntry]:
+def _get_entry_class(line_split_into_fields: list[str]) -> type[_NastranBulkData]:
     entry_identifyer = line_split_into_fields[0].strip()
     try:
         return ENTRY_CLASS_MAPPING[entry_identifyer]

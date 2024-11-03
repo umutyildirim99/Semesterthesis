@@ -2,11 +2,11 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 
-from ._nastran_entry import _NastranEntry
+from ._nastran_bulk_data import _NastranBulkData
 
 
 @dataclass
-class Crod(_NastranEntry):
+class Crod(_NastranBulkData):
     """A tension-compression-torsion element."""
 
     eid: int
