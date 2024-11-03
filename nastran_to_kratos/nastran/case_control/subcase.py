@@ -42,6 +42,8 @@ class Subcase:
                     subcase.displacement = Displacement[value]
                 case "LABEL":
                     subcase.label = value
+                case "LOAD":
+                    subcase.load = int(value)
                 case "SUBTITLE":
                     subcase.subtitle = value
                 case _:

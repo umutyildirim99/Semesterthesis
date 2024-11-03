@@ -43,6 +43,13 @@ def test_from_file_content__label():
     assert actual == Subcase(label="LS_yForce")
 
 
+def test_from_file_content__load():
+    file_content = ["  LOAD = 1"]
+
+    actual = Subcase.from_file_content(file_content)
+    assert actual == Subcase(load=1)
+
+
 def test_from_file_content__subtitle():
     file_content = ["  SUBTITLE = LS_xForce"]
 
