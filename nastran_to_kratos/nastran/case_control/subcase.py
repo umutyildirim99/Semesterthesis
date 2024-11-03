@@ -38,6 +38,8 @@ class Subcase:
             match key:
                 case "ANALYSIS":
                     subcase.analysis = Analysis[value]
+                case "DISPLACEMENT":
+                    subcase.displacement = Displacement[value]
                 case "LABEL":
                     subcase.label = value
                 case "SUBTITLE":

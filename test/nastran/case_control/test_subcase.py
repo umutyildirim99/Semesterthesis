@@ -4,6 +4,7 @@ from nastran_to_kratos.nastran.case_control.subcase import (
     Subcase,
     UnsupportedSubcaseFieldError,
     Analysis,
+    Displacement,
 )
 
 
@@ -26,6 +27,13 @@ def test_from_file_content__analysis():
 
     actual = Subcase.from_file_content(file_content)
     assert actual == Subcase(analysis=Analysis.STATICS)
+
+
+def test_from_file_content__displacement():
+    file_content = ["  DISPLACEMENT = ALL"]
+
+    actual = Subcase.from_file_content(file_content)
+    assert actual == Subcase(displacement=Displacement.ALL)
 
 
 def test_from_file_content__label():
