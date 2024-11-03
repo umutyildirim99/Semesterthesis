@@ -24,6 +24,24 @@ class CaseControlSection:
         return CaseControlSection(general=Subcase.empty(), subcases={})
 
     @classmethod
-    def from_file_content(cls, _file_content: list[str]) -> CaseControlSection:
+    def from_file_content(cls, file_content: list[str]) -> CaseControlSection:
         """Construct this class from the contents of a nastran file."""
-        return CaseControlSection.empty()
+        case_control_section = CaseControlSection.empty()
+
+        subcase_lines_with_general: dict[int, list[str]] = {0: []}
+        current_subcase_id = 0
+        for line in file_content:
+            if line.startswith("SUBCASE"):
+                current_subcase_id = int(line.split(" ")[-1].strip())
+                subcase_lines_with_general[current_subcase_id] = []
+                continue
+
+            subcase_lines_with_general[current_subcase_id].append(line)
+
+        for subcase_id, subcase in subcase_lines_with_general.items():
+            if subcase_id == 0:
+                case_control_section.general = Subcase.from_file_content(subcase)
+            else:
+                case_control_section.subcases[subcase_id] = Subcase.from_file_content(subcase)
+
+        return case_control_section
