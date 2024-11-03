@@ -12,14 +12,14 @@ from .stress import Stress
 class Subcase:
     """Description needed."""
 
-    subtitle: str | None = None
-    label: str | None = None
     analysis: Analysis | None = None
     displacement: Displacement | None = None
-    spc: int | None = None
+    label: str | None = None
     load: int | None = None
+    spc: int | None = None
     strain: Strain | None = None
     stress: Stress | None = None
+    subtitle: str | None = None
 
     @classmethod
     def empty(cls) -> Subcase:
@@ -36,12 +36,12 @@ class Subcase:
             value = line.split("=")[1].strip()
 
             match key:
-                case "SUBTITLE":
-                    subcase.subtitle = value
-                case "LABEL":
-                    subcase.label = value
                 case "ANALYSIS":
                     subcase.analysis = Analysis[value]
+                case "LABEL":
+                    subcase.label = value
+                case "SUBTITLE":
+                    subcase.subtitle = value
                 case _:
                     raise UnsupportedSubcaseFieldError(key)
 

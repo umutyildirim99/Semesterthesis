@@ -21,11 +21,11 @@ def test_from_file_content__invalid_key():
         Subcase.from_file_content(file_content)
 
 
-def test_from_file_content__subtitle():
-    file_content = ["  SUBTITLE = LS_xForce"]
+def test_from_file_content__analysis():
+    file_content = ["  ANALYSIS = STATICS"]
 
     actual = Subcase.from_file_content(file_content)
-    assert actual == Subcase(subtitle="LS_xForce")
+    assert actual == Subcase(analysis=Analysis.STATICS)
 
 
 def test_from_file_content__label():
@@ -35,11 +35,11 @@ def test_from_file_content__label():
     assert actual == Subcase(label="LS_yForce")
 
 
-def test_from_file_content__analysis():
-    file_content = ["  ANALYSIS = STATICS"]
+def test_from_file_content__subtitle():
+    file_content = ["  SUBTITLE = LS_xForce"]
 
     actual = Subcase.from_file_content(file_content)
-    assert actual == Subcase(analysis=Analysis.STATICS)
+    assert actual == Subcase(subtitle="LS_xForce")
 
 
 if __name__ == "__main__":
