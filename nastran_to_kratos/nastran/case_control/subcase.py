@@ -12,11 +12,21 @@ from .stress import Stress
 class Subcase:
     """Description needed."""
 
-    subtitle: str
-    label: str
-    analysis: Analysis
-    displacement: Displacement | None
-    spc: int | None
-    load: int | None
-    strain: Strain | None
-    stress: Stress | None
+    subtitle: str | None = None
+    label: str | None = None
+    analysis: Analysis | None = None
+    displacement: Displacement | None = None
+    spc: int | None = None
+    load: int | None = None
+    strain: Strain | None = None
+    stress: Stress | None = None
+
+    @classmethod
+    def empty(cls) -> Subcase:
+        """Construct a minimal instance of this class."""
+        return Subcase()
+
+    @classmethod
+    def from_file_content(cls, _file_content: list[str]) -> Subcase:
+        """Construct this class from the contents of a nastran file."""
+        return cls.empty()
