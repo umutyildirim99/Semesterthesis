@@ -46,6 +46,8 @@ class Subcase:
                     subcase.load = int(value)
                 case "SPC":
                     subcase.spc = int(value)
+                case "STRAIN":
+                    subcase.strain = Strain[value]
                 case "SUBTITLE":
                     subcase.subtitle = value
                 case _:

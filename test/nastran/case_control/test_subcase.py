@@ -5,6 +5,8 @@ from nastran_to_kratos.nastran.case_control.subcase import (
     UnsupportedSubcaseFieldError,
     Analysis,
     Displacement,
+    Strain,
+    Stress,
 )
 
 
@@ -55,6 +57,13 @@ def test_from_file_content__spc():
 
     actual = Subcase.from_file_content(file_content)
     assert actual == Subcase(spc=2)
+
+
+def test_from_file_content__strain():
+    file_content = ["  STRAIN = ALL"]
+
+    actual = Subcase.from_file_content(file_content)
+    assert actual == Subcase(strain=Strain.ALL)
 
 
 def test_from_file_content__subtitle():
