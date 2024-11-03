@@ -4,6 +4,7 @@ from dataclasses import dataclass
 
 from .bulk_data import Crod, Force, Grid, Prod, Spc
 from .bulk_data._nastran_bulk_data import _NastranBulkData
+from .case_control.case_control_section import CaseControlSection
 
 ENTRY_CLASS_MAPPING: dict[str, type[_NastranBulkData]] = {
     "GRID": Grid,
@@ -18,12 +19,13 @@ ENTRY_CLASS_MAPPING: dict[str, type[_NastranBulkData]] = {
 class NastranSimulation:
     """All relevant contents of a nastran file."""
 
+    case_control: CaseControlSection | None
     bulk_data: list[_NastranBulkData]
 
     @classmethod
     def empty(cls) -> NastranSimulation:
         """Construct an empty NastranSimulation instance."""
-        return NastranSimulation(bulk_data=[])
+        return NastranSimulation(case_control=None, bulk_data=[])
 
     @classmethod
     def from_file_content(cls, file_content: list[str]) -> NastranSimulation:
