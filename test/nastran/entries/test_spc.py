@@ -1,4 +1,4 @@
-from nastran_to_kratos.nastran.entries import Spc
+from nastran_to_kratos.nastran.bulk_data import Spc
 
 import pytest
 

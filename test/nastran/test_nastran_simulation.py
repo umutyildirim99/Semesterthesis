@@ -2,7 +2,7 @@ from nastran_to_kratos.nastran.nastran_simulation import (
     NastranSimulation,
     EntryIdentifyerNotSupportedError,
 )
-from nastran_to_kratos.nastran.entries import Grid, Crod, Prod, Force, Spc
+from nastran_to_kratos.nastran.bulk_data import Grid, Crod, Prod, Force, Spc
 
 import pytest
 
@@ -14,7 +14,7 @@ def test_read_content__multiple_entries():
     ]
 
     actual = NastranSimulation.from_file_content(file_content)
-    assert len(actual.entries) == 2
+    assert len(actual.bulk_data) == 2
 
 
 def test_read_content__unsupported_entry():
@@ -28,7 +28,7 @@ def test_read_content__grid_entry():
     file_content = ["GRID           2          1000.0     0.0     0.0"]
 
     actual = NastranSimulation.from_file_content(file_content)
-    assert actual.entries == [
+    assert actual.bulk_data == [
         Grid.read(["GRID    ", "       2", "        ", "  1000.0", "     0.0", "     0.0"])
     ]
 
@@ -37,7 +37,7 @@ def test_read_content__crod_entry():
     file_content = ["CROD          12      13      21      23"]
 
     actual = NastranSimulation.from_file_content(file_content)
-    assert actual.entries == [
+    assert actual.bulk_data == [
         Crod.read(["CROD    ", "      12", "      13", "      21", "      23"])
     ]
 
@@ -46,21 +46,21 @@ def test_read_content__prod_entry():
     file_content = ["PROD          17      23    42.6   17.92  4.2356     0.5"]
 
     actual = NastranSimulation.from_file_content(file_content)
-    assert actual.entries == [Prod.read(["PROD", "17", "23", "42.6", "17.92", "4.2356", "0.5"])]
+    assert actual.bulk_data == [Prod.read(["PROD", "17", "23", "42.6", "17.92", "4.2356", "0.5"])]
 
 
 def test_read_content__force_entry():
     file_content = ["FORCE       2       5       6     2.9     0.0     1.0     0.0"]
 
     actual = NastranSimulation.from_file_content(file_content)
-    assert actual.entries == [Force.read(["FORCE", "2", "5", "6", "2.9", "0.0", "1.0", "0.0"])]
+    assert actual.bulk_data == [Force.read(["FORCE", "2", "5", "6", "2.9", "0.0", "1.0", "0.0"])]
 
 
 def test_read_content__spc_entry():
     file_content = ["SPC            2      32       3    -2.6      33       4    -1.6"]
 
     actual = NastranSimulation.from_file_content(file_content)
-    assert actual.entries == [Spc.read(["SPC", "2", "32", "3", "-2.6", "33", "4", "-1.6"])]
+    assert actual.bulk_data == [Spc.read(["SPC", "2", "32", "3", "-2.6", "33", "4", "-1.6"])]
 
 
 def test_read_content__ignore_dollar_signs():
