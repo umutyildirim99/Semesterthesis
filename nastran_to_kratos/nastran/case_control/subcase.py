@@ -27,6 +27,16 @@ class Subcase:
         return Subcase()
 
     @classmethod
-    def from_file_content(cls, _file_content: list[str]) -> Subcase:
+    def from_file_content(cls, file_content: list[str]) -> Subcase:
         """Construct this class from the contents of a nastran file."""
-        return cls.empty()
+        subcase = Subcase.empty()
+
+        for line in file_content:
+            key = line.split("=")[0].strip()
+            value = line.split("=")[1].strip()
+
+            match key:
+                case "SUBTITLE":
+                    subcase.subtitle = value
+
+        return subcase
