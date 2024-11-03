@@ -21,7 +21,7 @@ class BulkDataSection:
 
     @classmethod
     def empty(cls) -> BulkDataSection:
-        """Construct an empty NastranSimulation instance."""
+        """Construct a minimal instance of this class."""
         return BulkDataSection(entries=[])
 
     @classmethod
