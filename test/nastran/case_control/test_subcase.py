@@ -24,5 +24,12 @@ def test_from_file_content__subtitle():
     assert actual == Subcase(subtitle="LS_xForce")
 
 
+def test_from_file_content__label():
+    file_content = ["  LABEL = LS_yForce"]
+
+    actual = Subcase.from_file_content(file_content)
+    assert actual == Subcase(label="LS_yForce")
+
+
 if __name__ == "__main__":
     pytest.main([__file__, "-v"])

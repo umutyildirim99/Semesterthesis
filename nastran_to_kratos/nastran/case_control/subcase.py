@@ -38,6 +38,8 @@ class Subcase:
             match key:
                 case "SUBTITLE":
                     subcase.subtitle = value
+                case "LABEL":
+                    subcase.label = value
                 case _:
                     raise UnsupportedSubcaseFieldError(key)
 
