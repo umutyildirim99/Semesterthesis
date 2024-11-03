@@ -17,13 +17,13 @@ class Prod(_BulkDataEntry):
     c: float = 0.0
 
     @classmethod
-    def read(cls, raw_entry: list[str]) -> Prod:
+    def from_file_content(cls, file_content: list[str]) -> Prod:
         """Construct a Prod from the entry in a nastran file."""
         return Prod(
-            pid=int(raw_entry[1]),
-            mid=int(raw_entry[2]),
-            a=float(raw_entry[3]),
-            j=float(raw_entry[4]),
-            c=cls._read_optional_field(raw_entry, 5, float, 0.0),
-            nsm=float(raw_entry[6]),
+            pid=int(file_content[1]),
+            mid=int(file_content[2]),
+            a=float(file_content[3]),
+            j=float(file_content[4]),
+            c=cls._read_optional_field(file_content, 5, float, 0.0),
+            nsm=float(file_content[6]),
         )

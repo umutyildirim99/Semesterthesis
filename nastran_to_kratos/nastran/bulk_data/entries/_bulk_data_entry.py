@@ -14,7 +14,7 @@ class _BulkDataEntry(ABC):
 
     @classmethod
     @abstractmethod
-    def read(cls, raw_entry: list[str]) -> _BulkDataEntry:
+    def from_file_content(cls, file_content: list[str]) -> _BulkDataEntry:
         """Create this class from the relevant entry in a nastran file."""
 
     @classmethod

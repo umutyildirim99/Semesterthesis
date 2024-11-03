@@ -35,7 +35,7 @@ class BulkDataSection:
 
             line_split_into_fields = [line[i : i + 8] for i in range(0, len(line), 8)]
             entry_class = _get_entry_class(line_split_into_fields)
-            bulk_data.entries.append(entry_class.read(line_split_into_fields))
+            bulk_data.entries.append(entry_class.from_file_content(line_split_into_fields))
 
         return bulk_data
 
