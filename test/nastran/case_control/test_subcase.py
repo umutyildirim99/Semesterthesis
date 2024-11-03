@@ -66,6 +66,13 @@ def test_from_file_content__strain():
     assert actual == Subcase(strain=Strain.ALL)
 
 
+def test_from_file_content__stress():
+    file_content = ["  STRESS = ALL"]
+
+    actual = Subcase.from_file_content(file_content)
+    assert actual == Subcase(stress=Stress.ALL)
+
+
 def test_from_file_content__subtitle():
     file_content = ["  SUBTITLE = LS_xForce"]
 

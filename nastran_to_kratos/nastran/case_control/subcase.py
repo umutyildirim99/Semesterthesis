@@ -48,6 +48,8 @@ class Subcase:
                     subcase.spc = int(value)
                 case "STRAIN":
                     subcase.strain = Strain[value]
+                case "STRESS":
+                    subcase.stress = Stress[value]
                 case "SUBTITLE":
                     subcase.subtitle = value
                 case _:
