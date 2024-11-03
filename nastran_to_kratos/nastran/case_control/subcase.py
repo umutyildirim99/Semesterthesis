@@ -38,5 +38,14 @@ class Subcase:
             match key:
                 case "SUBTITLE":
                     subcase.subtitle = value
+                case _:
+                    raise UnsupportedSubcaseFieldError(key)
 
         return subcase
+
+
+class UnsupportedSubcaseFieldError(Exception):
+    """Raised when a subcase field is not (yet) supported."""
+
+    def __init__(self, field_name: str) -> None:
+        super().__init__(f"{field_name} is not a supported field for the subcases.")
