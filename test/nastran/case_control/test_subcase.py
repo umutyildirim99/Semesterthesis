@@ -1,6 +1,10 @@
 import pytest
 
-from nastran_to_kratos.nastran.case_control.subcase import Subcase, UnsupportedSubcaseFieldError
+from nastran_to_kratos.nastran.case_control.subcase import (
+    Subcase,
+    UnsupportedSubcaseFieldError,
+    Analysis,
+)
 
 
 def test_from_file_content__empty():
@@ -29,6 +33,13 @@ def test_from_file_content__label():
 
     actual = Subcase.from_file_content(file_content)
     assert actual == Subcase(label="LS_yForce")
+
+
+def test_from_file_content__analysis():
+    file_content = ["  ANALYSIS = STATICS"]
+
+    actual = Subcase.from_file_content(file_content)
+    assert actual == Subcase(analysis=Analysis.STATICS)
 
 
 if __name__ == "__main__":

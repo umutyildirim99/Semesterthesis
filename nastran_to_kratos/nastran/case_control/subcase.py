@@ -40,6 +40,8 @@ class Subcase:
                     subcase.subtitle = value
                 case "LABEL":
                     subcase.label = value
+                case "ANALYSIS":
+                    subcase.analysis = Analysis[value]
                 case _:
                     raise UnsupportedSubcaseFieldError(key)
 
