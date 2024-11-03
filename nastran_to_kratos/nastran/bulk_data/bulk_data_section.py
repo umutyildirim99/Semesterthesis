@@ -2,11 +2,9 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 
-from .bulk_data.entries import Crod, Force, Grid, Prod, Spc
-from .bulk_data.entries._nastran_bulk_data import _NastranBulkData
-from .case_control.case_control_section import CaseControlSection
+from .entries import Crod, Force, Grid, Prod, Spc, _BulkDataEntry
 
-ENTRY_CLASS_MAPPING: dict[str, type[_NastranBulkData]] = {
+ENTRY_CLASS_MAPPING: dict[str, type[_BulkDataEntry]] = {
     "GRID": Grid,
     "CROD": Crod,
     "PROD": Prod,
@@ -16,21 +14,20 @@ ENTRY_CLASS_MAPPING: dict[str, type[_NastranBulkData]] = {
 
 
 @dataclass
-class NastranSimulation:
-    """All relevant contents of a nastran file."""
+class BulkDataSection:
+    """The bulk data section containing the model and loads."""
 
-    case_control: CaseControlSection | None
-    bulk_data: list[_NastranBulkData]
+    entries: list[_BulkDataEntry]
 
     @classmethod
-    def empty(cls) -> NastranSimulation:
+    def empty(cls) -> BulkDataSection:
         """Construct an empty NastranSimulation instance."""
-        return NastranSimulation(case_control=None, bulk_data=[])
+        return BulkDataSection(entries=[])
 
     @classmethod
-    def from_file_content(cls, file_content: list[str]) -> NastranSimulation:
+    def from_file_content(cls, file_content: list[str]) -> BulkDataSection:
         """Construct this class from the contents of a nastran file."""
-        simulation = NastranSimulation.empty()
+        bulk_data = BulkDataSection.empty()
 
         for line in file_content:
             if _line_should_be_ignored(line):
@@ -38,9 +35,9 @@ class NastranSimulation:
 
             line_split_into_fields = [line[i : i + 8] for i in range(0, len(line), 8)]
             entry_class = _get_entry_class(line_split_into_fields)
-            simulation.bulk_data.append(entry_class.read(line_split_into_fields))
+            bulk_data.entries.append(entry_class.read(line_split_into_fields))
 
-        return simulation
+        return bulk_data
 
 
 def _line_should_be_ignored(line: str) -> bool:
@@ -54,7 +51,7 @@ def _line_should_be_ignored(line: str) -> bool:
     return False
 
 
-def _get_entry_class(line_split_into_fields: list[str]) -> type[_NastranBulkData]:
+def _get_entry_class(line_split_into_fields: list[str]) -> type[_BulkDataEntry]:
     entry_identifyer = line_split_into_fields[0].strip()
     try:
         return ENTRY_CLASS_MAPPING[entry_identifyer]

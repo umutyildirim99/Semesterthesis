@@ -2,11 +2,11 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 
-from ._nastran_bulk_data import _NastranBulkData
+from ._bulk_data_entry import _BulkDataEntry
 
 
 @dataclass
-class Force(_NastranBulkData):
+class Force(_BulkDataEntry):
     """Defines a static concentrated force at a grid point by specifying a vector."""
 
     sid: int

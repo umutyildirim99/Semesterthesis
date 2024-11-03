@@ -2,11 +2,11 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 
-from ._nastran_bulk_data import _NastranBulkData
+from ._bulk_data_entry import _BulkDataEntry
 
 
 @dataclass
-class Grid(_NastranBulkData):
+class Grid(_BulkDataEntry):
     """A geometric grid point."""
 
     id: int

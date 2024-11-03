@@ -6,7 +6,7 @@ from typing import TypeVar
 T = TypeVar("T")
 
 
-class _NastranBulkData(ABC):
+class _BulkDataEntry(ABC):
     """The template for any single nastran element.
 
     This class should not be used directly.
@@ -14,7 +14,7 @@ class _NastranBulkData(ABC):
 
     @classmethod
     @abstractmethod
-    def read(cls, raw_entry: list[str]) -> _NastranBulkData:
+    def read(cls, raw_entry: list[str]) -> _BulkDataEntry:
         """Create this class from the relevant entry in a nastran file."""
 
     @classmethod

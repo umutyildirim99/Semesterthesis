@@ -2,11 +2,11 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 
-from ._nastran_bulk_data import _NastranBulkData
+from ._bulk_data_entry import _BulkDataEntry
 
 
 @dataclass
-class Prod(_NastranBulkData):
+class Prod(_BulkDataEntry):
     """Defines the properties of a rod element (CROD entry)."""
 
     pid: int
