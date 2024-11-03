@@ -2,8 +2,8 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 
-from .bulk_data import Crod, Force, Grid, Prod, Spc
-from .bulk_data._nastran_bulk_data import _NastranBulkData
+from .bulk_data.entries import Crod, Force, Grid, Prod, Spc
+from .bulk_data.entries._nastran_bulk_data import _NastranBulkData
 from .case_control.case_control_section import CaseControlSection
 
 ENTRY_CLASS_MAPPING: dict[str, type[_NastranBulkData]] = {

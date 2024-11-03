@@ -1,4 +1,4 @@
-from nastran_to_kratos.nastran.bulk_data import Force
+from nastran_to_kratos.nastran.bulk_data.entries import Force
 
 import pytest
 
