@@ -17,3 +17,13 @@ class CaseControlSection:
 
     general: Subcase
     subcases: dict[int, Subcase]
+
+    @classmethod
+    def empty(cls) -> CaseControlSection:
+        """Construct a minimal instance of this class."""
+        return CaseControlSection(general=Subcase.empty(), subcases={})
+
+    @classmethod
+    def from_file_content(cls, _file_content: list[str]) -> CaseControlSection:
+        """Construct this class from the contents of a nastran file."""
+        return CaseControlSection.empty()
