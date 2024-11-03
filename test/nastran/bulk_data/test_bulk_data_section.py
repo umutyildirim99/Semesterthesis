@@ -99,5 +99,12 @@ def test_from_file_content__ignore_enddata():
     assert actual == BulkDataSection.empty()
 
 
+def test_from_file_content__ignore_param():
+    file_content = ["PARAM,POST,-2"]
+
+    actual = BulkDataSection.from_file_content(file_content)
+    assert actual == BulkDataSection.empty()
+
+
 if __name__ == "__main__":
     pytest.main([__file__, "-v"])

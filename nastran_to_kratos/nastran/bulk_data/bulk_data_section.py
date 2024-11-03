@@ -22,7 +22,7 @@ class BulkDataSection:
         bulk_data = BulkDataSection.empty()
 
         for line in file_content:
-            entry_identifyer = line.strip().split(" ")[0].strip()
+            entry_identifyer = line.strip().split(" ")[0].split(",")[0].strip()
 
             processed_entry: _BulkDataEntry | None = None
             match entry_identifyer:
@@ -37,7 +37,7 @@ class BulkDataSection:
                 case "SPC":
                     processed_entry = Spc.from_file_content(_split_short_line(line))
 
-                case "SOL" | "CEND" | "BEGIN" | "ENDDATA" | "MAT1":
+                case "SOL" | "CEND" | "BEGIN" | "ENDDATA" | "PARAM" | "MAT1":
                     pass
                 case _:
                     raise EntryIdentifyerNotSupportedError(entry_identifyer)
