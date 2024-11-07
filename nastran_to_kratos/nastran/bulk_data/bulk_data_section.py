@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 
-from .entries import Crod, Force, Grid, Prod, Spc, _BulkDataEntry
+from .entries import Crod, Force, Grid, Mat1, Prod, Spc, _BulkDataEntry
 
 
 @dataclass
@@ -32,12 +32,14 @@ class BulkDataSection:
                     processed_entry = Force.from_file_content(_split_short_line(line))
                 case "GRID":
                     processed_entry = Grid.from_file_content(_split_short_line(line))
+                case "MAT1":
+                    processed_entry = Mat1.from_file_content(_split_short_line(line))
                 case "PROD":
                     processed_entry = Prod.from_file_content(_split_short_line(line))
                 case "SPC":
                     processed_entry = Spc.from_file_content(_split_short_line(line))
 
-                case "SOL" | "CEND" | "BEGIN" | "ENDDATA" | "PARAM" | "MAT1":
+                case "SOL" | "CEND" | "BEGIN" | "ENDDATA" | "PARAM":
                     pass
                 case _:
                     raise EntryIdentifyerNotSupportedError(entry_identifyer)
