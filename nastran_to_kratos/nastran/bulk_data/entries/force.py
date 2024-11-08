@@ -2,11 +2,11 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 
-from ._nastran_entry import _NastranEntry
+from ._bulk_data_entry import _BulkDataEntry
 
 
 @dataclass
-class Force(_NastranEntry):
+class Force(_BulkDataEntry):
     """Defines a static concentrated force at a grid point by specifying a vector."""
 
     sid: int
@@ -31,14 +31,14 @@ class Force(_NastranEntry):
     "Z-Components of a vector measured in coordinate system defined by CID."
 
     @classmethod
-    def read(cls, raw_entry: list[str]) -> Force:
+    def from_file_content(cls, file_content: list[str]) -> Force:
         """Construct a Force from the entry in a nastran file."""
         return Force(
-            sid=int(raw_entry[1]),
-            g=int(raw_entry[2]),
-            cid=cls._read_optional_field(raw_entry, 3, int, 0),
-            f=float(raw_entry[4]),
-            n1=float(raw_entry[5]),
-            n2=float(raw_entry[6]),
-            n3=float(raw_entry[7]),
+            sid=int(file_content[1]),
+            g=int(file_content[2]),
+            cid=cls._read_optional_field(file_content, 3, int, 0),
+            f=float(file_content[4]),
+            n1=float(file_content[5]),
+            n2=float(file_content[6]),
+            n3=float(file_content[7]),
         )

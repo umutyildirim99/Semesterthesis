@@ -2,11 +2,11 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 
-from ._nastran_entry import _NastranEntry
+from ._bulk_data_entry import _BulkDataEntry
 
 
 @dataclass
-class Spc(_NastranEntry):
+class Spc(_BulkDataEntry):
     """Defines a set of single-point constraints and enforced motion."""
 
     sid: int
@@ -31,14 +31,14 @@ class Spc(_NastranEntry):
     "Value of enforced motion for components g2 at grid c2."
 
     @classmethod
-    def read(cls, raw_entry: list[str]) -> Spc:
+    def from_file_content(cls, file_content: list[str]) -> Spc:
         """Construct a Spc from the entry in a nastran file."""
         return Spc(
-            sid=int(raw_entry[1]),
-            g1=int(raw_entry[2]),
-            c1=int(raw_entry[3]),
-            d1=cls._read_optional_field(raw_entry, 4, float, 0.0),
-            g2=cls._read_optional_field(raw_entry, 5, int, None),
-            c2=cls._read_optional_field(raw_entry, 6, int, None),
-            d2=cls._read_optional_field(raw_entry, 7, float, None),
+            sid=int(file_content[1]),
+            g1=int(file_content[2]),
+            c1=int(file_content[3]),
+            d1=cls._read_optional_field(file_content, 4, float, 0.0),
+            g2=cls._read_optional_field(file_content, 5, int, None),
+            c2=cls._read_optional_field(file_content, 6, int, None),
+            d2=cls._read_optional_field(file_content, 7, float, None),
         )

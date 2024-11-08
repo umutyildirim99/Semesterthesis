@@ -1,67 +1,64 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+from pathlib import Path
 
-from .entries import Crod, Force, Grid, Prod, Spc
-from .entries._nastran_entry import _NastranEntry
-
-ENTRY_CLASS_MAPPING: dict[str, type[_NastranEntry]] = {
-    "GRID": Grid,
-    "CROD": Crod,
-    "PROD": Prod,
-    "FORCE": Force,
-    "SPC": Spc,
-}
+from .bulk_data import BulkDataSection
+from .case_control import CaseControlSection
 
 
 @dataclass
 class NastranSimulation:
-    """All relevant contents of a nastran file."""
+    """All data contained in a nastran file."""
 
-    entries: list[_NastranEntry]
-
-    @classmethod
-    def empty(cls) -> NastranSimulation:
-        """Construct an empty NastranSimulation instance."""
-        return NastranSimulation(entries=[])
+    case_control: CaseControlSection
+    bulk_data: BulkDataSection
 
     @classmethod
     def from_file_content(cls, file_content: list[str]) -> NastranSimulation:
         """Construct this class from the contents of a nastran file."""
-        simulation = NastranSimulation.empty()
+        lines_sorted_by_section: dict[str, list[str]] = {"unassigned": []}
 
-        for line in file_content:
-            if _line_should_be_ignored(line):
-                continue
+        current_section_id = "unassigned"
+        for line in _remove_linebreak_from_file_content(file_content):
+            if "Case Control Cards" in line:
+                current_section_id = "case_control"
+                lines_sorted_by_section[current_section_id] = []
 
-            line_split_into_fields = [line[i : i + 8] for i in range(0, len(line), 8)]
-            entry_class = _get_entry_class(line_split_into_fields)
-            simulation.entries.append(entry_class.read(line_split_into_fields))
+            if "Bulk Data Cards" in line:
+                current_section_id = "bulk_data"
+                lines_sorted_by_section[current_section_id] = []
 
-        return simulation
+            if not _line_should_be_skipped(line):
+                lines_sorted_by_section[current_section_id].append(line)
 
+        return NastranSimulation(
+            case_control=CaseControlSection.from_file_content(
+                lines_sorted_by_section["case_control"]
+            ),
+            bulk_data=BulkDataSection.from_file_content(lines_sorted_by_section["bulk_data"]),
+        )
 
-def _line_should_be_ignored(line: str) -> bool:
-    """Return wether a given line should be skipped (e.g. if it is a comment)."""
-    if line == "":
-        return True
-
-    if line.startswith(("$", "SOL", "CEND", "BEGIN", "ENDDATA")):
-        return True
-
-    return False
-
-
-def _get_entry_class(line_split_into_fields: list[str]) -> type[_NastranEntry]:
-    entry_identifyer = line_split_into_fields[0].strip()
-    try:
-        return ENTRY_CLASS_MAPPING[entry_identifyer]
-    except KeyError:
-        raise EntryIdentifyerNotSupportedError(entry_identifyer) from None
+    @classmethod
+    def from_path(cls, path: Path) -> NastranSimulation:
+        """Read the contents of a path pointing to a file and construct this class from it."""
+        with path.open() as nastran_file:
+            return NastranSimulation.from_file_content(nastran_file.readlines())
 
 
-class EntryIdentifyerNotSupportedError(Exception):
-    """Raised when a line starts with an identifyer, that is not in ENTRY_CLASS_MAPPING."""
+def _remove_linebreak_from_file_content(file_content: list[str]) -> list[str]:
+    stripped_file_content = []
+    for line in file_content:
+        if line.endswith("\n"):
+            stripped_file_content.append(line[:-1])
+        else:
+            stripped_file_content.append(line)
 
-    def __init__(self, entry_identifyer: str) -> None:
-        super().__init__(f"{entry_identifyer} is not a supported entry type.")
+    return stripped_file_content
+
+
+def _line_should_be_skipped(line: str) -> bool:
+    line_is_empty = line == ""
+    line_is_a_comment = line.startswith("$")
+
+    return line_is_empty or line_is_a_comment

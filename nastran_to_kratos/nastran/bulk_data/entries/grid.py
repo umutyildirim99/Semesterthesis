@@ -2,11 +2,11 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 
-from ._nastran_entry import _NastranEntry
+from ._bulk_data_entry import _BulkDataEntry
 
 
 @dataclass
-class Grid(_NastranEntry):
+class Grid(_BulkDataEntry):
     """A geometric grid point."""
 
     id: int
@@ -36,15 +36,15 @@ class Grid(_NastranEntry):
     """Superelement identification number."""
 
     @classmethod
-    def read(cls, raw_entry: list[str]) -> Grid:
+    def from_file_content(cls, file_content: list[str]) -> Grid:
         """Construct a Grid from the entry in a nastran file."""
         return Grid(
-            id=int(raw_entry[1]),
-            cp=cls._read_optional_field(raw_entry, 2, int, None),
-            x1=cls._read_optional_field(raw_entry, 3, float, 0.0),
-            x2=cls._read_optional_field(raw_entry, 4, float, 0.0),
-            x3=cls._read_optional_field(raw_entry, 5, float, 0.0),
-            cd=cls._read_optional_field(raw_entry, 6, int, None),
-            ps=cls._read_optional_field(raw_entry, 7, str, None),
-            seid=cls._read_optional_field(raw_entry, 8, int, 0),
+            id=int(file_content[1]),
+            cp=cls._read_optional_field(file_content, 2, int, None),
+            x1=cls._read_optional_field(file_content, 3, float, 0.0),
+            x2=cls._read_optional_field(file_content, 4, float, 0.0),
+            x3=cls._read_optional_field(file_content, 5, float, 0.0),
+            cd=cls._read_optional_field(file_content, 6, int, None),
+            ps=cls._read_optional_field(file_content, 7, str, None),
+            seid=cls._read_optional_field(file_content, 8, int, 0),
         )

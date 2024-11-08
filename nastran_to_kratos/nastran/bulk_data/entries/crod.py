@@ -2,11 +2,11 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 
-from ._nastran_entry import _NastranEntry
+from ._bulk_data_entry import _BulkDataEntry
 
 
 @dataclass
-class Crod(_NastranEntry):
+class Crod(_BulkDataEntry):
     """A tension-compression-torsion element."""
 
     eid: int
@@ -22,11 +22,11 @@ class Crod(_NastranEntry):
     """Property identification number of a PROD entry."""
 
     @classmethod
-    def read(cls, raw_entry: list[str]) -> Crod:
+    def from_file_content(cls, file_content: list[str]) -> Crod:
         """Construct a Crod from the entry in a nastran file."""
         return Crod(
-            eid=int(raw_entry[1]),
-            pid=cls._read_optional_field(raw_entry, 2, int, None),
-            g1=int(raw_entry[3]),
-            g2=int(raw_entry[4]),
+            eid=int(file_content[1]),
+            pid=cls._read_optional_field(file_content, 2, int, None),
+            g1=int(file_content[3]),
+            g2=int(file_content[4]),
         )

@@ -33,6 +33,8 @@ ignore = [
     "ISC001",  # conflicts with ruff formatter
 
     "TCH001",  # adds hard to understand compexity without providing a benefit for smaller projects
+    "TCH002",  # same as TCH001
+    "TCH003",  # same as TCH001
 
     "SIM103",  # less readable in some cases imo
 ]

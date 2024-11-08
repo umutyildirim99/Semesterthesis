@@ -1,109 +1,56 @@
-from nastran_to_kratos.nastran.nastran_simulation import (
-    NastranSimulation,
-    EntryIdentifyerNotSupportedError,
-)
-from nastran_to_kratos.nastran.entries import Grid, Crod, Prod, Force, Spc
+from pathlib import Path
 
 import pytest
 
-
-def test_read_content__multiple_entries():
-    file_content = [
-        "GRID           2          1000.0     0.0     0.0",
-        "GRID           2       5  1000.0     0.0     2.0       3     123       7",
-    ]
-
-    actual = NastranSimulation.from_file_content(file_content)
-    assert len(actual.entries) == 2
-
-
-def test_read_content__unsupported_entry():
-    file_content = ["BADWORD "]
-
-    with pytest.raises(EntryIdentifyerNotSupportedError):
-        NastranSimulation.from_file_content(file_content)
+from nastran_to_kratos.nastran import NastranSimulation
+from nastran_to_kratos.nastran.case_control import (
+    Analysis,
+    CaseControlSection,
+    Displacement,
+    Strain,
+    Stress,
+    Subcase,
+)
+from nastran_to_kratos.nastran.bulk_data import BulkDataSection
+from nastran_to_kratos.nastran.bulk_data.entries import Crod, Force, Grid, Mat1, Prod, Spc
 
 
-def test_read_content__grid_entry():
-    file_content = ["GRID           2          1000.0     0.0     0.0"]
+def test_from_path__x_movable_rod():
+    source_path = Path(__file__).parent.parent.parent / "examples" / "x_movable_rod.bdf"
 
-    actual = NastranSimulation.from_file_content(file_content)
-    assert actual.entries == [
-        Grid.read(["GRID    ", "       2", "        ", "  1000.0", "     0.0", "     0.0"])
-    ]
-
-
-def test_read_content__crod_entry():
-    file_content = ["CROD          12      13      21      23"]
-
-    actual = NastranSimulation.from_file_content(file_content)
-    assert actual.entries == [
-        Crod.read(["CROD    ", "      12", "      13", "      21", "      23"])
-    ]
-
-
-def test_read_content__prod_entry():
-    file_content = ["PROD          17      23    42.6   17.92  4.2356     0.5"]
-
-    actual = NastranSimulation.from_file_content(file_content)
-    assert actual.entries == [Prod.read(["PROD", "17", "23", "42.6", "17.92", "4.2356", "0.5"])]
-
-
-def test_read_content__force_entry():
-    file_content = ["FORCE       2       5       6     2.9     0.0     1.0     0.0"]
-
-    actual = NastranSimulation.from_file_content(file_content)
-    assert actual.entries == [Force.read(["FORCE", "2", "5", "6", "2.9", "0.0", "1.0", "0.0"])]
-
-
-def test_read_content__spc_entry():
-    file_content = ["SPC            2      32       3    -2.6      33       4    -1.6"]
-
-    actual = NastranSimulation.from_file_content(file_content)
-    assert actual.entries == [Spc.read(["SPC", "2", "32", "3", "-2.6", "33", "4", "-1.6"])]
-
-
-def test_read_content__ignore_dollar_signs():
-    file_content = ["$GRID          2          1000.0     0.0     0.0"]
-
-    actual = NastranSimulation.from_file_content(file_content)
-    assert actual == NastranSimulation.empty()
-
-
-def test_read_content__ignore_empty_lines():
-    file_content = [""]
-
-    actual = NastranSimulation.from_file_content(file_content)
-    assert actual == NastranSimulation.empty()
-
-
-def test_read_content__ignore_sol():
-    file_content = ["SOL 101"]
-
-    actual = NastranSimulation.from_file_content(file_content)
-    assert actual == NastranSimulation.empty()
-
-
-def test_read_content__ignore_cend():
-    file_content = ["CEND"]
-
-    actual = NastranSimulation.from_file_content(file_content)
-    assert actual == NastranSimulation.empty()
-
-
-def test_read_content__ignore_begin():
-    file_content = ["BEGIN"]
-
-    actual = NastranSimulation.from_file_content(file_content)
-    assert actual == NastranSimulation.empty()
-
-
-def test_read_content__ignore_enddata():
-    file_content = ["ENDDATA"]
-
-    actual = NastranSimulation.from_file_content(file_content)
-    assert actual == NastranSimulation.empty()
+    actual = NastranSimulation.from_path(source_path)
+    assert actual == NastranSimulation(
+        case_control=CaseControlSection(
+            general=Subcase(
+                analysis=Analysis.STATICS,
+                displacement=Displacement.ALL,
+                strain=Strain.ALL,
+                stress=Stress.ALL,
+            ),
+            subcases={
+                1: Subcase(
+                    subtitle="LS_xForce",
+                    label="LS_xForce",
+                    spc=2,
+                    load=1,
+                    analysis=Analysis.STATICS,
+                )
+            },
+        ),
+        bulk_data=BulkDataSection(
+            entries=[
+                Grid(id=1, cp=None, x1=0.0, x2=0.0, x3=0.0),
+                Grid(id=2, cp=None, x1=1000.0, x2=0.0, x3=0.0),
+                Crod(eid=1, pid=1, g1=1, g2=2),
+                Prod(pid=1, mid=1, a=350.0),
+                Mat1(mid=1, e=210000.0, g=0.3),
+                Spc(sid=2, g1=1, c1=12345, d1=0.0, g2=None, c2=None, d2=None),
+                Spc(sid=2, g1=2, c1=2345, d1=0.0, g2=None, c2=None, d2=None),
+                Force(sid=1, g=2, cid=0, f=1.0, n1=40000.0, n2=0.0, n3=0.0),
+            ]
+        ),
+    )
 
 
 if __name__ == "__main__":
-    pytest.main([__file__, "-v"])
+    pytest.main([__file__, "-vv"])
