@@ -1,5 +1,6 @@
 from dataclasses import dataclass, field
 
+from .condition import Condition
 from .element import Element
 from .node import Node
 
@@ -13,6 +14,7 @@ class Model:
     properties: dict[int, dict[str, float]] = field(default_factory=dict)
     nodes: dict[int, Node] = field(default_factory=dict)
     elements: dict[str, dict[int, Element]] = field(default_factory=dict)
+    conditions: dict[str, dict[int, Condition]] = field(default_factory=dict)
 
     def to_mdpa(self) -> list[str]:
         """Export this model to a list of string compatible with the kratos .mdpa files."""
@@ -28,6 +30,10 @@ class Model:
 
         if len(self.elements) != 0:
             mdpa_content.extend(_elements_to_mdpa(self.elements))
+            mdpa_content.append("")
+
+        if len(self.conditions) != 0:
+            mdpa_content.extend(_conditions_to_mdpa(self.conditions))
             mdpa_content.append("")
 
         return _remove_empty_last_row(mdpa_content)
@@ -71,6 +77,21 @@ def _elements_to_mdpa(elements: dict[str, dict[int, Element]]) -> list[str]:
             mdpa_content.append(INDENT + sub_element.to_mdpa(subelement_id))
 
         mdpa_content.append("End Elements")
+        mdpa_content.append("")
+
+    return _remove_empty_last_row(mdpa_content)
+
+
+def _conditions_to_mdpa(conditions: dict[str, dict[int, Condition]]) -> list[str]:
+    mdpa_content = []
+
+    for condition_id, condition in conditions.items():
+        mdpa_content.append(f"Begin Conditions {condition_id}")
+
+        for subcondition_id, sub_condition in condition.items():
+            mdpa_content.append(INDENT + sub_condition.to_mdpa(subcondition_id))
+
+        mdpa_content.append("End Conditions")
         mdpa_content.append("")
 
     return _remove_empty_last_row(mdpa_content)
