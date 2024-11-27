@@ -19,30 +19,19 @@ class SubModel:
         """Export this model to a list of string compatible with the kratos .mdpa files."""
         mdpa_content = []
 
-        if len(self.properties) != 0:
-            mdpa_content.extend(_id_list_to_mdpa(self.properties, layer, "SubModelPartProperties"))
-            mdpa_content.append("")
-
-        if len(self.nodes) != 0:
-            mdpa_content.extend(_id_list_to_mdpa(self.nodes, layer, "SubModelPartNodes"))
-            mdpa_content.append("")
-
-        if len(self.elements) != 0:
-            mdpa_content.extend(_id_list_to_mdpa(self.elements, layer, "SubModelPartElements"))
-            mdpa_content.append("")
-
-        if len(self.conditions) != 0:
-            mdpa_content.extend(_id_list_to_mdpa(self.conditions, layer, "SubModelPartConditions"))
-            mdpa_content.append("")
-
-        if len(self.sub_models) != 0:
-            mdpa_content.extend(_submodels_to_mdpa(self.sub_models, layer))
-            mdpa_content.append("")
+        mdpa_content.extend(_id_list_to_mdpa(self.properties, layer, "SubModelPartProperties"))
+        mdpa_content.extend(_id_list_to_mdpa(self.nodes, layer, "SubModelPartNodes"))
+        mdpa_content.extend(_id_list_to_mdpa(self.elements, layer, "SubModelPartElements"))
+        mdpa_content.extend(_id_list_to_mdpa(self.conditions, layer, "SubModelPartConditions"))
+        mdpa_content.extend(_submodels_to_mdpa(self.sub_models, layer))
 
         return _remove_empty_last_row(mdpa_content)
 
 
 def _id_list_to_mdpa(id_list: list[int], layer: int, section_name: str) -> list[str]:
+    if id_list == []:
+        return []
+
     mdpa_content = []
     mdpa_content.append(_indent(f"Begin {section_name}", layer))
 
@@ -53,6 +42,9 @@ def _id_list_to_mdpa(id_list: list[int], layer: int, section_name: str) -> list[
 
 
 def _submodels_to_mdpa(submodels: dict[str, SubModel], layer: int) -> list[str]:
+    if submodels == {}:
+        return []
+
     mdpa_content = []
 
     for submodel_id, submodel in submodels.items():

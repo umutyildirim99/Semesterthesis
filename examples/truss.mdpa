@@ -19,7 +19,6 @@ Begin SubModelPart Truss
         1
         2
     End SubModelPartNodes
-
     Begin SubModelPartElements
         1
     End SubModelPartElements
@@ -41,7 +40,6 @@ Begin SubModelPart xForce_Node2
     Begin SubModelPartNodes
         2
     End SubModelPartNodes
-
     Begin SubModelPartConditions
         1
     End SubModelPartConditions
