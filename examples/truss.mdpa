@@ -2,16 +2,16 @@ Begin Properties 0
 End Properties
 
 Begin Nodes
-    1   0.0 0.0 0.0
-    2   1000.0 0.0 0.00
+    1 0.0 0.0 0.0
+    2 1000.0 0.0 0.00
 End Nodes
 
 Begin Elements TrussLinearElement3D2N
-1 0 1 2
+    1 0 1 2
 End Elements
 
 Begin Conditions PointLoadCondition2D1N
-1 0 2
+    1 0 2
 End Conditions
 
 Begin SubModelPart Truss
