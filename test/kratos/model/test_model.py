@@ -10,17 +10,13 @@ def test_to_mdpa__empty():
     assert actual == []
 
 
-def test_to_mdpa__properties():
+def test_to_mdpa__one_property_two_values():
     model = Model(
         properties={
             0: {
                 "DENSITY": 1.0,
                 "THICKNESS": 2.0,
-            },
-            1: {
-                "DENSITY": 3.0,
-                "THICKNESS": 4.0,
-            },
+            }
         }
     )
 
@@ -30,10 +26,29 @@ def test_to_mdpa__properties():
         "    DENSITY 1.0",
         "    THICKNESS 2.0",
         "End Properties",
+    ]
+
+
+def test_to_mdpa__two_properties_one_value_each():
+    model = Model(
+        properties={
+            0: {
+                "DENSITY": 1.0,
+            },
+            1: {
+                "DENSITY": 3.0,
+            },
+        }
+    )
+
+    actual = model.to_mdpa()
+    assert actual == [
+        "Begin Properties 0",
+        "    DENSITY 1.0",
+        "End Properties",
         "",
         "Begin Properties 1",
         "    DENSITY 3.0",
-        "    THICKNESS 4.0",
         "End Properties",
     ]
 
@@ -55,7 +70,7 @@ def test_to_mdpa__nodes():
     ]
 
 
-def test_to_mdpa__elements():
+def test_to_mdpa__one_element_two_values():
     model = Model(
         elements={
             "TrussLinearElement3D2N": {
@@ -66,6 +81,27 @@ def test_to_mdpa__elements():
                 2: Element(
                     property_id=1,
                     node_ids=[2, 3],
+                ),
+            },
+        }
+    )
+
+    actual = model.to_mdpa()
+    assert actual == [
+        "Begin Elements TrussLinearElement3D2N",
+        "    1 0 1 2",
+        "    2 1 2 3",
+        "End Elements",
+    ]
+
+
+def test_to_mdpa__two_elements_one_value_each():
+    model = Model(
+        elements={
+            "TrussLinearElement3D2N": {
+                1: Element(
+                    property_id=0,
+                    node_ids=[1, 2],
                 ),
             },
             "Element2D3N": {
@@ -81,7 +117,6 @@ def test_to_mdpa__elements():
     assert actual == [
         "Begin Elements TrussLinearElement3D2N",
         "    1 0 1 2",
-        "    2 1 2 3",
         "End Elements",
         "",
         "Begin Elements Element2D3N",
