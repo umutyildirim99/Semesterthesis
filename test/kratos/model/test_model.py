@@ -1,6 +1,6 @@
 import pytest
 
-from nastran_to_kratos.kratos.model import Condition, Element, Model, Node
+from nastran_to_kratos.kratos.model import Condition, Element, Model, Node, SubModel
 
 
 def test_to_mdpa__empty():
@@ -180,45 +180,12 @@ def test_to_mdpa__two_conditions_one_value_each():
     ]
 
 
-def test_to_mdpa__submodels_empty_one_layer():
-    model = Model(sub_models={"Truss": Model()})
+def test_to_mdpa__submodel_empty():
+    model = Model(sub_models={"Truss": SubModel()})
 
     actual = model.to_mdpa()
     assert actual == [
         "Begin SubModelPart Truss",
-        "End SubModelPart",
-    ]
-
-
-def test_to_mdpa__submodels_empty_two_layers():
-    model = Model(sub_models={"Truss": Model(sub_models={"SubTruss": Model()})})
-
-    actual = model.to_mdpa()
-    assert actual == [
-        "Begin SubModelPart Truss",
-        "    Begin SubModelPart SubTruss",
-        "    End SubModelPart",
-        "End SubModelPart",
-    ]
-
-
-def test_to_mdpa__submodel_sub_fields():
-    model = Model(
-        sub_models={
-            "Truss": Model(
-                nodes={
-                    1: Node(1.0, 2.0, 3.0),
-                }
-            )
-        }
-    )
-
-    actual = model.to_mdpa()
-    assert actual == [
-        "Begin SubModelPart Truss",
-        "    Begin SubModelPartNodes",
-        "        1 1.0 2.0 3.0",
-        "    End SubModelPartNodes",
         "End SubModelPart",
     ]
 
