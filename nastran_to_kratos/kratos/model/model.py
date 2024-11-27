@@ -1,5 +1,6 @@
 from dataclasses import dataclass, field
 
+from .element import Element
 from .node import Node
 
 INDENT = "    "
@@ -11,6 +12,7 @@ class Model:
 
     properties: dict[int, dict[str, float]] = field(default_factory=dict)
     nodes: dict[int, Node] = field(default_factory=dict)
+    elements: dict[str, dict[int, Element]] = field(default_factory=dict)
 
     def to_mdpa(self) -> list[str]:
         """Export this model to a list of string compatible with the kratos .mdpa files."""
@@ -22,6 +24,10 @@ class Model:
 
         if len(self.nodes) != 0:
             mdpa_content.extend(_nodes_to_mdpa(self.nodes))
+            mdpa_content.append("")
+
+        if len(self.elements) != 0:
+            mdpa_content.extend(_elements_to_mdpa(self.elements))
             mdpa_content.append("")
 
         return _remove_empty_last_row(mdpa_content)
@@ -53,6 +59,21 @@ def _nodes_to_mdpa(nodes: dict[int, Node]) -> list[str]:
     mdpa_content.append("End Nodes")
 
     return mdpa_content
+
+
+def _elements_to_mdpa(elements: dict[str, dict[int, Element]]) -> list[str]:
+    mdpa_content = []
+
+    for element_id, element in elements.items():
+        mdpa_content.append(f"Begin Elements {element_id}")
+
+        for subelement_id, sub_element in element.items():
+            mdpa_content.append(INDENT + sub_element.to_mdpa(subelement_id))
+
+        mdpa_content.append("End Elements")
+        mdpa_content.append("")
+
+    return _remove_empty_last_row(mdpa_content)
 
 
 def _remove_empty_last_row(mdpa_content: list[str]) -> list[str]:

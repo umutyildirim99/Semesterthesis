@@ -1,6 +1,6 @@
 import pytest
 
-from nastran_to_kratos.kratos.model import Model, Node
+from nastran_to_kratos.kratos.model import Element, Model, Node
 
 
 def test_to_mdpa__empty():
@@ -52,6 +52,41 @@ def test_to_mdpa__nodes():
         "    1 1.0 2.0 3.0",
         "    2 4.0 5.0 6.0",
         "End Nodes",
+    ]
+
+
+def test_to_mdpa__elements():
+    model = Model(
+        elements={
+            "TrussLinearElement3D2N": {
+                1: Element(
+                    property_id=0,
+                    node_ids=[1, 2],
+                ),
+                2: Element(
+                    property_id=1,
+                    node_ids=[2, 3],
+                ),
+            },
+            "Element2D3N": {
+                1: Element(
+                    property_id=0,
+                    node_ids=[1, 4],
+                ),
+            },
+        }
+    )
+
+    actual = model.to_mdpa()
+    assert actual == [
+        "Begin Elements TrussLinearElement3D2N",
+        "    1 0 1 2",
+        "    2 1 2 3",
+        "End Elements",
+        "",
+        "Begin Elements Element2D3N",
+        "    1 0 1 4",
+        "End Elements",
     ]
 
 
