@@ -10,6 +10,34 @@ def test_to_mdpa__empty():
     assert actual == []
 
 
+def test_to_mdpa__properties():
+    model = Model(
+        properties={
+            0: {
+                "DENSITY": 1.0,
+                "THICKNESS": 2.0,
+            },
+            1: {
+                "DENSITY": 3.0,
+                "THICKNESS": 4.0,
+            },
+        }
+    )
+
+    actual = model.to_mdpa()
+    assert actual == [
+        "Begin Properties 0",
+        "    DENSITY 1.0",
+        "    THICKNESS 2.0",
+        "End Properties",
+        "",
+        "Begin Properties 1",
+        "    DENSITY 3.0",
+        "    THICKNESS 4.0",
+        "End Properties",
+    ]
+
+
 def test_to_mdpa__nodes():
     model = Model(
         nodes={
