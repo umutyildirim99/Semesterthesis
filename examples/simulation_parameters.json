@@ -7,13 +7,13 @@
     },
     "solver_settings": {
         "time_stepping": {
-            "time_step": 1.1 
+            "time_step": 1.1
         },
-        "solver_type": "Static", 
+        "solver_type": "Static",
         "model_part_name": "Structure",
         "domain_size": 3,
         "echo_level": 0,
-        "analysis_type": "linear", 
+        "analysis_type": "linear",
         "model_import_settings": {
             "input_type": "mdpa",
             "input_filename": "truss"
@@ -21,12 +21,12 @@
         "material_import_settings": {
             "materials_filename": "Materials.json"
         },
-        "line_search": false, 
-        "convergence_criterion": "residual_criterion", 
-        "displacement_relative_tolerance": 1.0e-4, 
-        "displacement_absolute_tolerance": 1.0e-9, 
-        "residual_relative_tolerance": 1.0e-4, 
-        "residual_absolute_tolerance": 1.0e-9, 
+        "line_search": false,
+        "convergence_criterion": "residual_criterion",
+        "displacement_relative_tolerance": 1.0e-4,
+        "displacement_absolute_tolerance": 1.0e-9,
+        "residual_relative_tolerance": 1.0e-4,
+        "residual_absolute_tolerance": 1.0e-9,
         "max_iteration": 10,
         "rotation_dofs": false,
         "volumetric_strain_dofs": false

@@ -10,7 +10,7 @@ from nastran_to_kratos.kratos.material import Material
 
 def test_write_to_directory__x_movable_rod__model(tmp_path):
     output_dir = tmp_path / "x_movable_rod"
-    ground_truth_path = Path(__file__).parent.parent.parent / "examples" / "truss.mdpa"
+    ground_truth_path = Path(__file__).parent.parent.parent / "examples" / "model.mdpa"
 
     kratos_simulation = KratosSimulation(
         model=Model(
@@ -39,7 +39,7 @@ def test_write_to_directory__x_movable_rod__model(tmp_path):
 
 def test_write_to_directory__x_movable_rod__materials(tmp_path):
     output_dir = tmp_path / "x_movable_rod"
-    ground_truth_path = Path(__file__).parent.parent.parent / "examples" / "Materials.json"
+    ground_truth_path = Path(__file__).parent.parent.parent / "examples" / "materials.json"
 
     kratos_simulation = KratosSimulation(
         materials=[
