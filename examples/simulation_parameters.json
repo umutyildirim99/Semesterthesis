@@ -16,10 +16,10 @@
         "analysis_type": "linear",
         "model_import_settings": {
             "input_type": "mdpa",
-            "input_filename": "truss"
+            "input_filename": "model"
         },
         "material_import_settings": {
-            "materials_filename": "Materials.json"
+            "materials_filename": "materials.json"
         },
         "line_search": false,
         "convergence_criterion": "residual_criterion",
