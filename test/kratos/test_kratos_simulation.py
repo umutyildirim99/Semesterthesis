@@ -66,7 +66,9 @@ def test_write_to_directory__x_movable_rod__materials(tmp_path):
 
 def test_write_to_directory__x_movable_rod__parameters(tmp_path):
     output_dir = tmp_path / "x_movable_rod"
-    ground_truth_path = Path(__file__).parent.parent.parent / "examples" / "simulation_parameters.json"
+    ground_truth_path = (
+        Path(__file__).parent.parent.parent / "examples" / "simulation_parameters.json"
+    )
 
     kratos_simulation = KratosSimulation(
         parameters=SimulationParameters(
@@ -88,7 +90,7 @@ def test_write_to_directory__x_movable_rod__parameters(tmp_path):
                     modulus=40_000.0,
                     direction=(1.0, 0.0, 0.0),
                 )
-            ]
+            ],
         )
     )
 

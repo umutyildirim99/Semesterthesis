@@ -19,11 +19,8 @@ class Load:
             "Parameters": {
                 "model_part_name": self.model_part_name,
                 "variable_name": "POINT_LOAD",
-                "interval": [
-                    0.0,
-                    "End"
-                ],
+                "interval": [0.0, "End"],
                 "modulus": self.modulus,
                 "direction": self.direction,
-            }
+            },
         }

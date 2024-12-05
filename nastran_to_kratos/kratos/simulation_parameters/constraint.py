@@ -18,11 +18,8 @@ class Constraint:
             "Parameters": {
                 "model_part_name": self.model_part_name,
                 "variable_name": "DISPLACEMENT",
-                "interval": [
-                    0.0,
-                    "End"
-                ],
+                "interval": [0.0, "End"],
                 "constrained": self.constrained_per_axis,
-                "value": self.value_per_axis
-            }
+                "value": self.value_per_axis,
+            },
         }
