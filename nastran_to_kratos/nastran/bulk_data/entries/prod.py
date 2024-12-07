@@ -10,11 +10,22 @@ class Prod(_BulkDataEntry):
     """Defines the properties of a rod element (CROD entry)."""
 
     pid: int
+    "Property identification number."
+
     mid: int
+    "Material identification number."
+
     a: float
+    "Cross-sectional area."
+
     j: float | None = None
+    "Torsional constant."
+
     c: float = 0.0
+    "Coefficient to determine torsional stress."
+
     nsm: float | None = None
+    "Nonstructural mass per unit length."
 
     @classmethod
     def from_file_content(cls, file_content: list[str]) -> Prod:
