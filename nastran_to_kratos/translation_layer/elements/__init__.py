@@ -7,9 +7,9 @@ from .point import Point, nodes_from_nastran
 
 __all__ = [
     "Connector",
-    "Truss",
     "Element",
     "Material",
     "Point",
+    "Truss",
     "nodes_from_nastran",
 ]
