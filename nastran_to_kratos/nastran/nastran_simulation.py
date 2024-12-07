@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from pathlib import Path
 
 from .bulk_data import BulkDataSection
@@ -11,8 +11,8 @@ from .case_control import CaseControlSection
 class NastranSimulation:
     """All data contained in a nastran file."""
 
-    case_control: CaseControlSection
-    bulk_data: BulkDataSection
+    case_control: CaseControlSection = field(default_factory=CaseControlSection.empty)
+    bulk_data: BulkDataSection = field(default_factory=BulkDataSection.empty)
 
     @classmethod
     def from_file_content(cls, file_content: list[str]) -> NastranSimulation:
