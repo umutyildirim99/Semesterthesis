@@ -11,6 +11,36 @@ class BulkDataSection:
 
     entries: list[_BulkDataEntry]
 
+    @property
+    def crods(self) -> list[Crod]:
+        """Return all Crod objects in the entries."""
+        return [elem for elem in self.entries if isinstance(elem, Crod)]
+
+    @property
+    def forces(self) -> list[Force]:
+        """Return all Force objects in the entries."""
+        return [elem for elem in self.entries if isinstance(elem, Force)]
+
+    @property
+    def grids(self) -> list[Grid]:
+        """Return all Grid objects in the entries."""
+        return [elem for elem in self.entries if isinstance(elem, Grid)]
+
+    @property
+    def mat1s(self) -> list[Mat1]:
+        """Return all Mat1 objects in the entries."""
+        return [elem for elem in self.entries if isinstance(elem, Mat1)]
+
+    @property
+    def prods(self) -> list[Prod]:
+        """Return all Prod objects in the entries."""
+        return [elem for elem in self.entries if isinstance(elem, Prod)]
+
+    @property
+    def spcs(self) -> list[Spc]:
+        """Return all Spc objects in the entries."""
+        return [elem for elem in self.entries if isinstance(elem, Spc)]
+
     @classmethod
     def empty(cls) -> BulkDataSection:
         """Construct a minimal instance of this class."""
