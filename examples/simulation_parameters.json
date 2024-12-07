@@ -1,6 +1,5 @@
 {
     "problem_data": {
-        "problem_name": "truss",
         "parallel_type": "OpenMP",
         "echo_level": 1,
         "start_time": 0.0,
@@ -17,10 +16,10 @@
         "analysis_type": "linear",
         "model_import_settings": {
             "input_type": "mdpa",
-            "input_filename": "truss"
+            "input_filename": "model"
         },
         "material_import_settings": {
-            "materials_filename": "Materials.json"
+            "materials_filename": "materials.json"
         },
         "line_search": false,
         "convergence_criterion": "residual_criterion",
@@ -37,7 +36,6 @@
             {
                 "python_module": "assign_vector_variable_process",
                 "kratos_module": "KratosMultiphysics",
-                "help": "This process fixes the selected components of a given vector variable",
                 "process_name": "AssignVectorVariableProcess",
                 "Parameters": {
                     "model_part_name": "Structure.SPC_Group_Node1",
@@ -61,7 +59,6 @@
             {
                 "python_module": "assign_vector_variable_process",
                 "kratos_module": "KratosMultiphysics",
-                "help": "This process fixes the selected components of a given vector variable",
                 "process_name": "AssignVectorVariableProcess",
                 "Parameters": {
                     "model_part_name": "Structure.SPC_Group_Node2",
