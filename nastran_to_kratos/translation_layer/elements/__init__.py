@@ -3,7 +3,7 @@
 from .connector import Connector, Truss
 from .element import Element
 from .material import Material
-from .point import Point
+from .point import Point, nodes_from_nastran
 
 __all__ = [
     "Connector",
@@ -11,4 +11,5 @@ __all__ = [
     "Element",
     "Material",
     "Point",
+    "nodes_from_nastran",
 ]
