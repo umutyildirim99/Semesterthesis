@@ -5,6 +5,7 @@ from dataclasses import dataclass
 
 from quantio import Area
 
+from nastran_to_kratos.nastran.bulk_data import BulkDataSection
 from nastran_to_kratos.nastran.bulk_data.entries import Crod, Prod
 
 
@@ -33,3 +34,9 @@ class Truss(Connector):
             seconds_point_id=crod.g2,
             cross_section=Area(square_millimeters=prod.a),
         )
+
+
+def trusses_from_nastran(bulk_data: BulkDataSection) -> list[Truss]:
+    """Construct all materials from the nastran Crods and Prods."""
+    prods_by_pid = {prod.pid: prod for prod in bulk_data.prods}
+    return [Truss.from_nastran(crod, prods_by_pid[crod.pid]) for crod in bulk_data.crods]
