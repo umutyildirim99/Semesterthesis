@@ -21,7 +21,7 @@ class Material:
         return Material(name=f"Mat1_{mat1.mid}", young_modulus=Pressure(megapascal=mat1.e))
 
 
-def material_from_nastran(bulk_data: BulkDataSection) -> list[Material]:
+def materials_from_nastran(bulk_data: BulkDataSection) -> list[Material]:
     """Construct all materials from the nastran mat1s."""
     return [Material.from_nastran(mat1) for mat1 in _sort_by_mat1_id(bulk_data.mat1s)]
 
