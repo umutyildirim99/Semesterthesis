@@ -4,6 +4,7 @@ from dataclasses import dataclass
 
 from quantio import Pressure
 
+from nastran_to_kratos.nastran.bulk_data import BulkDataSection
 from nastran_to_kratos.nastran.bulk_data.entries import Mat1
 
 
@@ -18,3 +19,12 @@ class Material:
     def from_nastran(cls, mat1: Mat1) -> Material:
         """Construct this class from nastran."""
         return Material(name=f"Mat1_{mat1.mid}", young_modulus=Pressure(megapascal=mat1.e))
+
+
+def material_from_nastran(bulk_data: BulkDataSection) -> list[Material]:
+    """Construct all materials from the nastran mat1s."""
+    return [Material.from_nastran(mat1) for mat1 in _sort_by_mat1_id(bulk_data.mat1s)]
+
+
+def _sort_by_mat1_id(mat1s: list[Mat1]) -> list[Mat1]:
+    return sorted(mat1s, key=lambda mat1: mat1.mid)

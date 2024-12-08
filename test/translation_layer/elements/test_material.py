@@ -5,7 +5,7 @@ from quantio import Pressure
 
 from nastran_to_kratos.nastran.bulk_data import BulkDataSection
 from nastran_to_kratos.nastran.bulk_data.entries import Mat1
-from nastran_to_kratos.translation_layer.elements import Material
+from nastran_to_kratos.translation_layer.elements import Material, material_from_nastran
 
 
 def test_from_nastran():
@@ -13,6 +13,22 @@ def test_from_nastran():
 
     actual = Material.from_nastran(mat1)
     assert actual == Material(name="Mat1_1", young_modulus=Pressure(gigapascal=210))
+
+
+def test_materials_from_nastran__two_consecutive_materials():
+    mat1 = Mat1(mid=1, e=210_000)
+    mat2 = Mat1(mid=2, e=210_000)
+
+    actual = material_from_nastran(BulkDataSection(entries=[mat1, mat2]))
+    assert actual == [Material.from_nastran(mat1), Material.from_nastran(mat2)]
+
+
+def test_materials_from_nastran__wrong_order():
+    mat1 = Mat1(mid=2, e=210_000)
+    mat2 = Mat1(mid=1, e=210_000)
+
+    actual = material_from_nastran(BulkDataSection(entries=[mat1, mat2]))
+    assert actual == [Material.from_nastran(mat2), Material.from_nastran(mat1)]
 
 
 if __name__ == "__main__":
