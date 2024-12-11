@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 
+from nastran_to_kratos.kratos.material import Material as KratosMaterial
 from nastran_to_kratos.nastran.bulk_data import BulkDataSection
 from nastran_to_kratos.nastran.bulk_data.entries import _BulkDataEntry
 
@@ -26,6 +27,24 @@ class Element:
             nodes=nodes_from_nastran(bulk_data),
             connectors=trusses_from_nastran(bulk_data),
             material=Material.from_nastran(bulk_data.mat1s[0]),
+        )
+
+    def to_kratos_material(self, index: int) -> KratosMaterial:
+        """Export this element as a kratos material."""
+        if self.material is None:
+            raise ValueError
+
+        return KratosMaterial(
+            model_part_name=f"element_{index}",
+            properties_id=0,
+            material_name=self.material.name,
+            constitutive_law="TrussConstitutiveLaw",
+            variables={
+                "YOUNG_MODULUS": self.material.young_modulus.megapascal
+                if self.material.young_modulus is not None
+                else 0.0,
+                "CROSS_AREA": self.connectors[0].cross_section.square_millimeters,  # type: ignore[attr-defined]
+            },
         )
 
 

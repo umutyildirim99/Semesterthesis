@@ -1,7 +1,7 @@
 from pathlib import Path
 
 import pytest
-from quantio import Pressure
+from quantio import Pressure, Area
 
 from nastran_to_kratos.nastran.bulk_data import BulkDataSection
 from nastran_to_kratos.nastran.bulk_data.entries import Mat1, Grid, Crod, Prod
@@ -12,6 +12,7 @@ from nastran_to_kratos.translation_layer.elements import (
     Truss,
     elements_from_nastran,
 )
+from nastran_to_kratos.kratos.material import Material as KratosMaterial
 
 
 def test_from_nastran__one_rod_two_grids():
@@ -26,6 +27,22 @@ def test_from_nastran__one_rod_two_grids():
         nodes=[Point.from_nastran(grid1), Point.from_nastran(grid2)],
         connectors=[Truss.from_nastran(crod, prod)],
         material=Material.from_nastran(mat1),
+    )
+
+
+def test_to_kratos_material():
+    element = Element(
+        connectors=[Truss(0, 0, cross_section=Area(square_millimeters=350))],
+        material=Material(name="Steel", young_modulus=Pressure(gigapascal=210)),
+    )
+
+    actual = element.to_kratos_material(1)
+    assert actual == KratosMaterial(
+        model_part_name="element_1",
+        properties_id=0,
+        material_name="Steel",
+        constitutive_law="TrussConstitutiveLaw",
+        variables={"YOUNG_MODULUS": 210000.0, "CROSS_AREA": 350},
     )
 
 
