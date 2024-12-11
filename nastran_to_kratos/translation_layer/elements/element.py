@@ -27,3 +27,54 @@ class Element:
             connectors=trusses_from_nastran(bulk_data),
             material=Material.from_nastran(bulk_data.mat1s[0]),
         )
+
+
+def elements_from_nastran(bulk_data: BulkDataSection) -> list[Element]:
+    """Construct all elements from nastran."""
+    grids_by_id = {grid.id: grid for grid in bulk_data.grids}
+    crods = bulk_data.crods
+    prods_by_pid = {prod.pid: prod for prod in bulk_data.prods}
+    mat1s_by_mid = {mat1.mid: mat1 for mat1 in bulk_data.mat1s}
+
+    nastran_elements: list[set[_BulkDataEntry]] = []
+    for crod in crods:
+        element_which_contains_grid1 = _which_element_is_entry_in(
+            grids_by_id[crod.g1], nastran_elements
+        )
+        element_which_contains_grid2 = _which_element_is_entry_in(
+            grids_by_id[crod.g2], nastran_elements
+        )
+
+        if element_which_contains_grid1 is None and element_which_contains_grid2 is None:
+            nastran_elements.append(set())
+            element_index = -1
+
+        elif element_which_contains_grid1 is not None and element_which_contains_grid2 is None:
+            element_index = element_which_contains_grid1
+
+        elif element_which_contains_grid1 is None and element_which_contains_grid2 is not None:
+            element_index = element_which_contains_grid2
+
+        else:
+            element_index = element_which_contains_grid1  # type: ignore[assignment]
+
+        nastran_elements[element_index].update(
+            [
+                crod,
+                prods_by_pid[crod.pid],
+                mat1s_by_mid[prods_by_pid[crod.pid].mid],
+                grids_by_id[crod.g1],
+                grids_by_id[crod.g2],
+            ]
+        )
+
+    return [Element.from_nastran(list(entries)) for entries in nastran_elements]
+
+
+def _which_element_is_entry_in(
+    entry: _BulkDataEntry, nastran_elements: list[set[_BulkDataEntry]]
+) -> int | None:
+    for i, nastran_element in enumerate(nastran_elements):
+        if entry in nastran_element:
+            return i
+    return None

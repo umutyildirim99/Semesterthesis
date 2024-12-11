@@ -42,3 +42,8 @@ class Spc(_BulkDataEntry):
             c2=cls._read_optional_field(file_content, 6, int, None),
             d2=cls._read_optional_field(file_content, 7, float, None),
         )
+
+    def __hash__(self) -> int:
+        """Return a hash of this instance."""
+        attributes = tuple(sorted(vars(self).items()))
+        return hash(attributes)

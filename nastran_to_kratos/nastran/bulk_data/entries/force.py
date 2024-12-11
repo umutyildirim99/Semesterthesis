@@ -42,3 +42,8 @@ class Force(_BulkDataEntry):
             n2=float(file_content[6]),
             n3=float(file_content[7]),
         )
+
+    def __hash__(self) -> int:
+        """Return a hash of this instance."""
+        attributes = tuple(sorted(vars(self).items()))
+        return hash(attributes)

@@ -30,3 +30,8 @@ class Crod(_BulkDataEntry):
             g1=int(file_content[3]),
             g2=int(file_content[4]),
         )
+
+    def __hash__(self) -> int:
+        """Return a hash of this instance."""
+        attributes = tuple(sorted(vars(self).items()))
+        return hash(attributes)

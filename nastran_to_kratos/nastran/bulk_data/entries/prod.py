@@ -38,3 +38,8 @@ class Prod(_BulkDataEntry):
             c=cls._read_optional_field(file_content, 5, float, 0.0),
             nsm=cls._read_optional_field(file_content, 6, float, None),
         )
+
+    def __hash__(self) -> int:
+        """Return a hash of this instance."""
+        attributes = tuple(sorted(vars(self).items()))
+        return hash(attributes)
