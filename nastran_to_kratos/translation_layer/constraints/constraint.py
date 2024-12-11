@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 
+from nastran_to_kratos.nastran.bulk_data import BulkDataSection
 from nastran_to_kratos.nastran.bulk_data.entries import Spc
 
 
@@ -29,3 +30,8 @@ class Constraint:
                 "6" in str(spc.c1),
             ),
         )
+
+
+def constraints_from_nastran(bulk_data: BulkDataSection) -> list[Constraint]:
+    """Construct all constraints from nastran."""
+    return [Constraint.from_nastran(spc) for spc in bulk_data.spcs]
