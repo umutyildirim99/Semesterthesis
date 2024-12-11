@@ -6,6 +6,7 @@ from nastran_to_kratos.nastran import NastranSimulation
 
 from .constraints import Constraint, constraints_from_nastran
 from .elements import Element, elements_from_nastran
+from .loads import Load, loads_from_nastran
 
 
 @dataclass
@@ -14,6 +15,7 @@ class TranslationLayer:
 
     elements: list[Element] = field(default_factory=list)
     constraints: list[Constraint] = field(default_factory=list)
+    loads: list[Load] = field(default_factory=list)
 
     @classmethod
     def from_nastran(cls, nastran: NastranSimulation) -> TranslationLayer:
@@ -21,4 +23,5 @@ class TranslationLayer:
         return TranslationLayer(
             elements=elements_from_nastran(nastran.bulk_data),
             constraints=constraints_from_nastran(nastran.bulk_data),
+            loads=loads_from_nastran(nastran.bulk_data),
         )
