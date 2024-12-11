@@ -36,7 +36,7 @@ class Truss(Connector):
         )
 
 
-def trusses_from_nastran(bulk_data: BulkDataSection) -> list[Truss]:
+def trusses_from_nastran(bulk_data: BulkDataSection) -> list[Connector]:
     """Construct all materials from the nastran Crods and Prods."""
     prods_by_pid = {prod.pid: prod for prod in bulk_data.prods}
     return [Truss.from_nastran(crod, prods_by_pid[crod.pid]) for crod in bulk_data.crods]

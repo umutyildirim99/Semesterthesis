@@ -18,7 +18,10 @@ class Material:
     @classmethod
     def from_nastran(cls, mat1: Mat1) -> Material:
         """Construct this class from nastran."""
-        return Material(name=f"Mat1_{mat1.mid}", young_modulus=Pressure(megapascal=mat1.e))
+        return Material(
+            name=f"Mat1_{mat1.mid}",
+            young_modulus=Pressure(megapascal=mat1.e) if mat1.e is not None else None,
+        )
 
 
 def materials_from_nastran(bulk_data: BulkDataSection) -> list[Material]:
