@@ -7,7 +7,7 @@ class Constraint:
 
     model_part_name: str
     constrained_per_axis: tuple[bool | None, bool | None, bool | None]
-    value_per_axis: tuple[float, float, float]
+    value_per_axis: tuple[float | None, float | None, float | None]
 
     def to_json(self) -> dict:
         """Export this constraint to a dictionary in a Kratos compatible format."""

@@ -2,13 +2,16 @@ from pathlib import Path
 
 import pytest
 
+from nastran_to_kratos.kratos.kratos_simulation import KratosSimulation, SimulationParameters
+from nastran_to_kratos.kratos.simulation_parameters import Constraint as KratosConstraint
+from nastran_to_kratos.kratos.simulation_parameters import Load as KratosLoad
 from nastran_to_kratos.nastran import NastranSimulation
 from nastran_to_kratos.nastran.bulk_data import BulkDataSection
 from nastran_to_kratos.nastran.bulk_data.entries import Spc, Mat1, Grid, Crod, Prod, Force
 from nastran_to_kratos.translation_layer import TranslationLayer
 from nastran_to_kratos.translation_layer.constraints import Constraint
 from nastran_to_kratos.translation_layer.loads import Load
-from nastran_to_kratos.translation_layer.elements import Element, elements_from_nastran
+from nastran_to_kratos.translation_layer.elements import Element, elements_from_nastran, Point
 
 
 def test_from_nastran__elements():
@@ -39,6 +42,32 @@ def test_from_nastran__loads():
 
     actual = TranslationLayer.from_nastran(nastran)
     assert actual.loads == [Load.from_nastran(force1), Load.from_nastran(force2)]
+
+
+def test_to_kratos__simulation_parameters():
+    translation_layer = TranslationLayer(
+        elements=[Element(nodes=[Point(0, 0, 0)])],
+        constraints=[
+            Constraint(
+                node_id=0,
+                translation_by_axis=(True, True, True),
+                rotation_by_axis=(False, False, False),
+            )
+        ],
+        loads=[Load(node_id=0, modulus=40_000, direction=(1, 0, 0))],
+    )
+
+    actual = translation_layer.to_kratos()
+    assert actual.parameters == SimulationParameters(
+        constraints=[
+            KratosConstraint(
+                model_part_name="element_0",
+                constrained_per_axis=(True, True, True),
+                value_per_axis=(0, 0, 0),
+            )
+        ],
+        loads=[KratosLoad(model_part_name="element_0", modulus=40_000, direction=(1, 0, 0))],
+    )
 
 
 if __name__ == "__main__":
