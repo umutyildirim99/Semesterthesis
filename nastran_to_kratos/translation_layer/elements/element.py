@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 
-from nastran_to_kratos.kratos.material import Material as KratosMaterial
+from nastran_to_kratos.kratos.material import KratosMaterial
 from nastran_to_kratos.nastran.bulk_data import BulkDataSection
 from nastran_to_kratos.nastran.bulk_data.entries import _BulkDataEntry
 

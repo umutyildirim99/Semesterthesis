@@ -5,8 +5,12 @@ import pytest
 
 from nastran_to_kratos.kratos import KratosSimulation
 from nastran_to_kratos.kratos.model import Model, Node, Element, Condition, SubModel
-from nastran_to_kratos.kratos.material import Material
-from nastran_to_kratos.kratos.simulation_parameters import Constraint, Load, SimulationParameters
+from nastran_to_kratos.kratos.material import KratosMaterial
+from nastran_to_kratos.kratos.simulation_parameters import (
+    KratosConstraint,
+    KratosLoad,
+    SimulationParameters,
+)
 
 
 def test_write_to_directory__x_movable_rod__model(tmp_path):
@@ -44,7 +48,7 @@ def test_write_to_directory__x_movable_rod__materials(tmp_path):
 
     kratos_simulation = KratosSimulation(
         materials=[
-            Material(
+            KratosMaterial(
                 model_part_name="Structure.Truss",
                 properties_id=0,
                 material_name="MAT1_1",
@@ -73,19 +77,19 @@ def test_write_to_directory__x_movable_rod__parameters(tmp_path):
     kratos_simulation = KratosSimulation(
         parameters=SimulationParameters(
             constraints=[
-                Constraint(
+                KratosConstraint(
                     model_part_name="Structure.SPC_Group_Node1",
                     constrained_per_axis=(True, True, True),
                     value_per_axis=(0.0, 0.0, 0.0),
                 ),
-                Constraint(
+                KratosConstraint(
                     model_part_name="Structure.SPC_Group_Node2",
                     constrained_per_axis=(False, True, True),
                     value_per_axis=(None, 0.0, 0.0),
                 ),
             ],
             loads=[
-                Load(
+                KratosLoad(
                     model_part_name="Structure.xForce_Node2",
                     modulus=40_000.0,
                     direction=(1.0, 0.0, 0.0),

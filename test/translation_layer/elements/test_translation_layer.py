@@ -3,8 +3,8 @@ from pathlib import Path
 import pytest
 
 from nastran_to_kratos.kratos.kratos_simulation import KratosSimulation, SimulationParameters
-from nastran_to_kratos.kratos.simulation_parameters import Constraint as KratosConstraint
-from nastran_to_kratos.kratos.simulation_parameters import Load as KratosLoad
+from nastran_to_kratos.kratos.simulation_parameters import KratosConstraint
+from nastran_to_kratos.kratos.simulation_parameters import KratosLoad
 from nastran_to_kratos.nastran import NastranSimulation
 from nastran_to_kratos.nastran.bulk_data import BulkDataSection
 from nastran_to_kratos.nastran.bulk_data.entries import Spc, Mat1, Grid, Crod, Prod, Force

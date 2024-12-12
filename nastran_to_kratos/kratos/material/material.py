@@ -2,7 +2,7 @@ from dataclasses import dataclass
 
 
 @dataclass
-class Material:
+class KratosMaterial:
     """A material."""
 
     model_part_name: str

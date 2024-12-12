@@ -2,7 +2,7 @@ from dataclasses import dataclass
 
 
 @dataclass
-class Constraint:
+class KratosConstraint:
     """Fixation of an element."""
 
     model_part_name: str

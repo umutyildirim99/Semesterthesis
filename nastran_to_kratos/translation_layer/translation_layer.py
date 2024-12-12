@@ -3,9 +3,11 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 
 from nastran_to_kratos.kratos import KratosSimulation
-from nastran_to_kratos.kratos.simulation_parameters import Constraint as KratosConstraint
-from nastran_to_kratos.kratos.simulation_parameters import Load as KratosLoad
-from nastran_to_kratos.kratos.simulation_parameters import SimulationParameters
+from nastran_to_kratos.kratos.simulation_parameters import (
+    KratosConstraint,
+    KratosLoad,
+    SimulationParameters,
+)
 from nastran_to_kratos.nastran import NastranSimulation
 
 from .constraints import Constraint, constraints_from_nastran

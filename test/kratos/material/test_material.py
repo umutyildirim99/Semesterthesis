@@ -1,10 +1,10 @@
 import pytest
 
-from nastran_to_kratos.kratos.material import Material
+from nastran_to_kratos.kratos.material import KratosMaterial
 
 
 def test_to_json():
-    material = Material(
+    material = KratosMaterial(
         model_part_name="Structure.Bar",
         properties_id=0,
         material_name="Steel",

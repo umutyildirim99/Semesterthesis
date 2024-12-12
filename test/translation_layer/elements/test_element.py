@@ -12,7 +12,7 @@ from nastran_to_kratos.translation_layer.elements import (
     Truss,
     elements_from_nastran,
 )
-from nastran_to_kratos.kratos.material import Material as KratosMaterial
+from nastran_to_kratos.kratos.material import KratosMaterial
 
 
 def test_from_nastran__one_rod_two_grids():
