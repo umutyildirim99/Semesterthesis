@@ -6,7 +6,7 @@ class Constraint:
     """Fixation of an element."""
 
     model_part_name: str
-    constrained_per_axis: tuple[bool | None, bool | None, bool | None]
+    constrained_per_axis: tuple[bool, bool, bool]
     value_per_axis: tuple[float | None, float | None, float | None]
 
     def to_json(self) -> dict:
