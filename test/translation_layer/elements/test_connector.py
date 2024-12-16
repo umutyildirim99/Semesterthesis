@@ -14,7 +14,7 @@ def test_truss_from_nastran():
 
     actual = Truss.from_nastran(crod, prod)
     assert actual == Truss(
-        first_point_id=2, seconds_point_id=3, cross_section=Area(square_millimeters=350.0)
+        first_point_index=2, second_point_index=3, cross_section=Area(square_millimeters=350.0)
     )
 
 

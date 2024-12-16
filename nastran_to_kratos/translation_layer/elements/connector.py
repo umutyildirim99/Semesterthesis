@@ -13,8 +13,8 @@ from nastran_to_kratos.nastran.bulk_data.entries import Crod, Prod
 class Connector(ABC):
     """The base class of all connectors between two elements."""
 
-    first_point_id: int
-    seconds_point_id: int
+    first_point_index: int
+    second_point_index: int
 
 
 @dataclass
@@ -30,8 +30,8 @@ class Truss(Connector):
             raise KeyError
 
         return Truss(
-            first_point_id=crod.g1,
-            seconds_point_id=crod.g2,
+            first_point_index=crod.g1,
+            second_point_index=crod.g2,
             cross_section=Area(square_millimeters=prod.a),
         )
 

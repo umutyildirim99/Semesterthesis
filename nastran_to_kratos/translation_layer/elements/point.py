@@ -4,6 +4,7 @@ from dataclasses import dataclass
 
 from quantio import Length
 
+from nastran_to_kratos.kratos.model import Node
 from nastran_to_kratos.nastran.bulk_data import BulkDataSection
 from nastran_to_kratos.nastran.bulk_data.entries import Grid
 
@@ -24,6 +25,10 @@ class Point:
             y=Length(millimeters=grid.x2),
             z=Length(millimeters=grid.x1),
         )
+
+    def to_kratos(self) -> Node:
+        """Export this Point as a kratos Node."""
+        return Node(x=self.x.millimeters, y=self.y.millimeters, z=self.z.millimeters)
 
 
 def nodes_from_nastran(bulk_data: BulkDataSection) -> list[Point]:

@@ -3,6 +3,8 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 
 from nastran_to_kratos.kratos import KratosSimulation
+from nastran_to_kratos.kratos.model import Condition, Model, SubModel
+from nastran_to_kratos.kratos.model import Element as KratosElement
 from nastran_to_kratos.kratos.simulation_parameters import (
     KratosConstraint,
     KratosLoad,
@@ -40,7 +42,8 @@ class TranslationLayer:
             parameters=SimulationParameters(
                 constraints=_constraints_to_kratos(self.constraints, element_index_by_node_index),
                 loads=_loads_to_kratos(self.loads, element_index_by_node_index),
-            )
+            ),
+            model=_model_to_kratos(self.elements, self.constraints, self.loads),
         )
 
 
@@ -80,3 +83,56 @@ def _loads_to_kratos(
         )
         for load in loads
     ]
+
+
+def _model_to_kratos(
+    elements: list[Element], constraints: list[Constraint], loads: list[Load]
+) -> Model:
+    all_points = []
+    for element in elements:
+        all_points.extend(element.nodes)
+
+    kratos_submodels = {}
+    kratos_elements: dict[str, dict[int, KratosElement]] = {}
+    for element_index, element in enumerate(elements):
+        element_id = f"element_{element_index+1}"
+        kratos_elements[element_id] = {}
+
+        for connector_index, connector in enumerate(element.connectors):
+            connector_points = [
+                all_points.index(element.nodes[connector.first_point_index]) + 1,
+                all_points.index(element.nodes[connector.second_point_index]) + 1,
+            ]
+            kratos_elements[element_id][connector_index + 1] = KratosElement(
+                property_id=0,
+                node_ids=connector_points,
+            )
+            kratos_submodels[f"truss_{connector_index + 1}"] = SubModel(
+                nodes=connector_points, elements=[element_index + 1]
+            )
+
+    kratos_conditions = {}
+    for load_index, load in enumerate(loads):
+        condition_id = f"condition_{load_index+1}"
+        node_ids = [all_points.index(element.nodes[load.node_id]) + 1]
+        kratos_conditions[condition_id] = {
+            1: Condition(
+                property_id=0,
+                node_ids=node_ids,
+            )
+        }
+        kratos_submodels[f"load_{load_index+1}"] = SubModel(
+            nodes=node_ids, conditions=[load_index + 1]
+        )
+
+    for constraint_index, constraint in enumerate(constraints):
+        constraint_id = f"constraint_{constraint_index + 1}"
+        kratos_submodels[constraint_id] = SubModel(nodes=[constraint.node_id + 1])
+
+    return Model(
+        properties={0: {}},
+        nodes={i + 1: point.to_kratos() for i, point in enumerate(all_points)},
+        elements=kratos_elements,
+        conditions=kratos_conditions,
+        sub_models=kratos_submodels,
+    )

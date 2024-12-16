@@ -1,17 +1,29 @@
 from pathlib import Path
 
 import pytest
+from quantio import Area, Pressure, Length
 
-from nastran_to_kratos.kratos.kratos_simulation import KratosSimulation, SimulationParameters
-from nastran_to_kratos.kratos.simulation_parameters import KratosConstraint
-from nastran_to_kratos.kratos.simulation_parameters import KratosLoad
+from nastran_to_kratos.kratos.kratos_simulation import KratosSimulation
+from nastran_to_kratos.kratos.model import Model, Node, Condition, SubModel
+from nastran_to_kratos.kratos.model import Element as KratosElement
+from nastran_to_kratos.kratos.simulation_parameters import (
+    KratosConstraint,
+    KratosLoad,
+    SimulationParameters,
+)
 from nastran_to_kratos.nastran import NastranSimulation
 from nastran_to_kratos.nastran.bulk_data import BulkDataSection
 from nastran_to_kratos.nastran.bulk_data.entries import Spc, Mat1, Grid, Crod, Prod, Force
 from nastran_to_kratos.translation_layer import TranslationLayer
 from nastran_to_kratos.translation_layer.constraints import Constraint
 from nastran_to_kratos.translation_layer.loads import Load
-from nastran_to_kratos.translation_layer.elements import Element, elements_from_nastran, Point
+from nastran_to_kratos.translation_layer.elements import (
+    Element,
+    elements_from_nastran,
+    Point,
+    Truss,
+    Material,
+)
 
 
 def test_from_nastran__elements():
@@ -46,7 +58,7 @@ def test_from_nastran__loads():
 
 def test_to_kratos__simulation_parameters():
     translation_layer = TranslationLayer(
-        elements=[Element(nodes=[Point(0, 0, 0)])],
+        elements=[Element(nodes=[Point(Length.zero(), Length.zero(), Length.zero())])],
         constraints=[
             Constraint(
                 node_id=0,
@@ -67,6 +79,50 @@ def test_to_kratos__simulation_parameters():
             )
         ],
         loads=[KratosLoad(model_part_name="element_0", modulus=40_000, direction=(1, 0, 0))],
+    )
+
+
+def test_to_kratos__model():
+    translation_layer = TranslationLayer(
+        elements=[
+            Element(
+                nodes=[
+                    Point(Length.zero(), Length.zero(), Length.zero()),
+                    Point(Length(meters=1), Length.zero(), Length.zero()),
+                ],
+                connectors=[
+                    Truss(first_point_index=0, second_point_index=1, cross_section=Area.zero())
+                ],
+                material=Material(name="Steel", young_modulus=Pressure(gigapascal=210)),
+            )
+        ],
+        constraints=[
+            Constraint(
+                node_id=0,
+                translation_by_axis=(True, True, True),
+                rotation_by_axis=(False, False, False),
+            ),
+            Constraint(
+                node_id=1,
+                translation_by_axis=(False, True, True),
+                rotation_by_axis=(False, False, False),
+            ),
+        ],
+        loads=[Load(node_id=0, modulus=40_000, direction=(1, 0, 0))],
+    )
+
+    actual = translation_layer.to_kratos()
+    assert actual.model == Model(
+        properties={0: {}},
+        nodes={1: Node(0, 0, 0), 2: Node(1000, 0, 0)},
+        elements={"element_1": {1: KratosElement(property_id=0, node_ids=[1, 2])}},
+        conditions={"condition_1": {1: Condition(property_id=0, node_ids=[1])}},
+        sub_models={
+            "truss_1": SubModel(nodes=[1, 2], elements=[1]),
+            "constraint_1": SubModel(nodes=[1]),
+            "constraint_2": SubModel(nodes=[2]),
+            "load_1": SubModel(nodes=[1], conditions=[1]),
+        },
     )
 
 
