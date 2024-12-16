@@ -3,6 +3,7 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 
 from nastran_to_kratos.kratos import KratosSimulation
+from nastran_to_kratos.kratos.material import KratosMaterial
 from nastran_to_kratos.kratos.model import Condition, Model, SubModel
 from nastran_to_kratos.kratos.model import Element as KratosElement
 from nastran_to_kratos.kratos.simulation_parameters import (
@@ -13,7 +14,7 @@ from nastran_to_kratos.kratos.simulation_parameters import (
 from nastran_to_kratos.nastran import NastranSimulation
 
 from .constraints import Constraint, constraints_from_nastran
-from .elements import Element, elements_from_nastran
+from .elements import Element, Truss, elements_from_nastran
 from .loads import Load, loads_from_nastran
 
 
@@ -44,6 +45,7 @@ class TranslationLayer:
                 loads=_loads_to_kratos(self.loads, element_index_by_node_index),
             ),
             model=_model_to_kratos(self.elements, self.constraints, self.loads),
+            materials=_materials_to_kratos(self.elements),
         )
 
 
@@ -136,3 +138,34 @@ def _model_to_kratos(
         conditions=kratos_conditions,
         sub_models=kratos_submodels,
     )
+
+
+def _materials_to_kratos(elements: list[Element]) -> list[KratosMaterial]:
+    kratos_materials: list[KratosMaterial] = []
+    for element in elements:
+        for connector in element.connectors:
+            if element.material is None:
+                continue
+
+            global_truss_id = f"truss_{len(kratos_materials) + 1}"
+            kratos_materials.append(
+                KratosMaterial(
+                    model_part_name=global_truss_id,
+                    properties_id=0,
+                    material_name=element.material.name,
+                    constitutive_law="TrussConstitutiveLaw",
+                    variables={},
+                )
+            )
+
+            if isinstance(connector, Truss):
+                kratos_materials[-1].variables["CROSS_SECTION"] = (
+                    connector.cross_section.square_millimeters
+                )
+
+            if element.material.young_modulus is not None:
+                kratos_materials[-1].variables["YOUNG_MODULUS"] = (
+                    element.material.young_modulus.megapascal
+                )
+
+    return kratos_materials
