@@ -5,7 +5,7 @@ from quantio import Length
 
 from nastran_to_kratos.nastran.bulk_data import BulkDataSection
 from nastran_to_kratos.nastran.bulk_data.entries import Grid
-from nastran_to_kratos.translation_layer.elements import Point, nodes_from_nastran
+from nastran_to_kratos.translation_layer import Point, nodes_from_nastran
 
 
 def test_from_nastran():

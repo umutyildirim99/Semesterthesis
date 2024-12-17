@@ -5,7 +5,7 @@ from quantio import Area
 
 from nastran_to_kratos.nastran.bulk_data import BulkDataSection
 from nastran_to_kratos.nastran.bulk_data.entries import Force
-from nastran_to_kratos.translation_layer.loads import Load
+from nastran_to_kratos.translation_layer.load import Load
 
 
 def test_from_nastran():

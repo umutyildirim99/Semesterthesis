@@ -5,7 +5,7 @@ from quantio import Pressure
 
 from nastran_to_kratos.nastran.bulk_data import BulkDataSection
 from nastran_to_kratos.nastran.bulk_data.entries import Mat1
-from nastran_to_kratos.translation_layer.elements import Material, materials_from_nastran
+from nastran_to_kratos.translation_layer import Material, materials_from_nastran
 from nastran_to_kratos.kratos.material import KratosMaterial
 
 

@@ -5,7 +5,7 @@ from quantio import Area, Pressure
 
 from nastran_to_kratos.nastran.bulk_data import BulkDataSection
 from nastran_to_kratos.nastran.bulk_data.entries import Crod, Prod, Mat1
-from nastran_to_kratos.translation_layer.elements.connector import (
+from nastran_to_kratos.translation_layer import (
     Truss,
     trusses_from_nastran,
     Material,

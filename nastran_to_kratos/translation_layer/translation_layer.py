@@ -4,9 +4,10 @@ from dataclasses import dataclass, field
 
 from nastran_to_kratos.nastran import NastranSimulation
 
-from .constraints import Constraint, constraints_from_nastran
-from .elements import Connector, Point, nodes_from_nastran
-from .loads import Load, loads_from_nastran
+from .connector import Connector
+from .constraint import Constraint, constraints_from_nastran
+from .load import Load, loads_from_nastran
+from .point import Point, nodes_from_nastran
 
 
 @dataclass

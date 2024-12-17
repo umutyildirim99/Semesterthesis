@@ -5,7 +5,7 @@ from quantio import Area
 
 from nastran_to_kratos.nastran.bulk_data import BulkDataSection
 from nastran_to_kratos.nastran.bulk_data.entries import Spc
-from nastran_to_kratos.translation_layer.constraints import Constraint
+from nastran_to_kratos.translation_layer import Constraint
 
 
 def test_from_nastran__all_movement_constraint():

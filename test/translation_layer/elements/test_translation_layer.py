@@ -15,14 +15,14 @@ from nastran_to_kratos.kratos.simulation_parameters import (
 from nastran_to_kratos.nastran import NastranSimulation
 from nastran_to_kratos.nastran.bulk_data import BulkDataSection
 from nastran_to_kratos.nastran.bulk_data.entries import Spc, Mat1, Grid, Crod, Prod, Force
-from nastran_to_kratos.translation_layer import TranslationLayer
-from nastran_to_kratos.translation_layer.constraints import Constraint
-from nastran_to_kratos.translation_layer.loads import Load
-from nastran_to_kratos.translation_layer.elements import (
-    nodes_from_nastran,
-    Point,
+from nastran_to_kratos.translation_layer import (
+    TranslationLayer,
+    Constraint,
     Truss,
-    Material,
+    Point,
+    Load,
+    nodes_from_nastran,
+    material,
 )
 
 
