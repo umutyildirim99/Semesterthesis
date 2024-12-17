@@ -4,7 +4,7 @@ from dataclasses import dataclass, field
 
 from nastran_to_kratos.nastran import NastranSimulation
 
-from .connector import Connector
+from .connector import Connector, trusses_from_nastran
 from .constraint import Constraint, constraints_from_nastran
 from .load import Load, loads_from_nastran
 from .point import Point, nodes_from_nastran
@@ -24,6 +24,7 @@ class TranslationLayer:
         """Construct this class from nastran."""
         return TranslationLayer(
             nodes=nodes_from_nastran(nastran.bulk_data),
+            connectors=trusses_from_nastran(nastran.bulk_data),
             constraints=constraints_from_nastran(nastran.bulk_data),
             loads=loads_from_nastran(nastran.bulk_data),
         )

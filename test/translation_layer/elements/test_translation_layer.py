@@ -22,6 +22,7 @@ from nastran_to_kratos.translation_layer import (
     Point,
     Load,
     nodes_from_nastran,
+    trusses_from_nastran,
     material,
 )
 
@@ -35,15 +36,20 @@ def test_from_nastran__nodes():
     assert actual.nodes == nodes_from_nastran(nastran.bulk_data)
 
 
-# def test_from_nastran__connectors():
-#     grid1 = Grid(id=1)
-#     grid2 = Grid(id=2)
-#     grid3 = Grid(id=3)
-#     crod1 =
-#     nastran = NastranSimulation(bulk_data=BulkDataSection([grid1, grid2]))
+def test_from_nastran__connectors():
+    grid1 = Grid(id=1)
+    grid2 = Grid(id=2)
+    grid3 = Grid(id=3)
+    crod1 = Crod(eid=5, pid=1, g1=1, g2=2)
+    crod2 = Crod(eid=6, pid=1, g1=2, g2=3)
+    prod1 = Prod(pid=1, mid=1, a=350)
+    mat1 = Mat1(mid=1, e=210_000)
+    nastran = NastranSimulation(
+        bulk_data=BulkDataSection([grid1, grid2, grid3, crod1, crod2, prod1, mat1])
+    )
 
-#     actual = TranslationLayer.from_nastran(nastran)
-#     assert actual.nodes == nodes_from_nastran(nastran.bulk_data)
+    actual = TranslationLayer.from_nastran(nastran)
+    assert actual.connectors == trusses_from_nastran(nastran.bulk_data)
 
 
 def test_from_nastran__constraints():
