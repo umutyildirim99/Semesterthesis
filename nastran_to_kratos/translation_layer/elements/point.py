@@ -13,14 +13,23 @@ from nastran_to_kratos.nastran.bulk_data.entries import Grid
 class Point:
     """A point in 3D space."""
 
+    id: int
+    """Number identifying the point for the entire simulation."""
+
     x: Length
+    """Position of the point on the x-axis."""
+
     y: Length
+    """Position of the point on the y-axis."""
+
     z: Length
+    """Position of the point on the z-axis."""
 
     @classmethod
     def from_nastran(cls, grid: Grid) -> Point:
         """Construct this class from nastran."""
         return Point(
+            id=grid.id,
             x=Length(millimeters=grid.x3),
             y=Length(millimeters=grid.x2),
             z=Length(millimeters=grid.x1),
