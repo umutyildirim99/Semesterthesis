@@ -15,11 +15,9 @@ from nastran_to_kratos.nastran.bulk_data import BulkDataSection
 from nastran_to_kratos.nastran.bulk_data.entries import Crod, Force, Grid, Mat1, Prod, Spc
 
 
-def test_from_path__x_movable_rod():
-    source_path = Path(__file__).parent.parent.parent / "examples" / "x_movable_rod.bdf"
-
-    actual = NastranSimulation.from_path(source_path)
-    assert actual == NastranSimulation(
+@pytest.fixture
+def x_movable_rod() -> NastranSimulation:
+    return NastranSimulation(
         case_control=CaseControlSection(
             general=Subcase(
                 analysis=Analysis.STATICS,
@@ -50,6 +48,22 @@ def test_from_path__x_movable_rod():
             ]
         ),
     )
+
+
+@pytest.fixture
+def x_movable_rod_path() -> Path:
+    return Path(__file__).parent.parent.parent / "examples" / "x_movable_rod.bdf"
+
+
+def read_file(path: Path) -> list[str]:
+    with path.open() as f:
+        file_content = f.readlines()
+    return file_content
+
+
+def test_from_path__x_movable_rod(x_movable_rod, x_movable_rod_path):
+    actual = NastranSimulation.from_path(x_movable_rod_path)
+    assert actual == x_movable_rod
 
 
 if __name__ == "__main__":
