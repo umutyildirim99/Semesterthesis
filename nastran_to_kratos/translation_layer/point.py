@@ -26,6 +26,11 @@ class Point:
     """Position of the point on the z-axis."""
 
     @classmethod
+    def origin(cls, id_: int) -> Point:
+        """Construct a point at with all positions at zero."""
+        return Point(id_, Length.zero(), Length.zero(), Length.zero())
+
+    @classmethod
     def from_nastran(cls, grid: Grid) -> Point:
         """Construct this class from nastran."""
         return Point(

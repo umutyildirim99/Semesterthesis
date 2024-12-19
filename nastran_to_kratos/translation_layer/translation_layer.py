@@ -3,6 +3,7 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 
 from nastran_to_kratos.kratos.kratos_simulation import KratosSimulation
+from nastran_to_kratos.kratos.material import KratosMaterial
 from nastran_to_kratos.kratos.model import Condition, Element, Model, SubModel
 from nastran_to_kratos.nastran import NastranSimulation
 
@@ -33,7 +34,9 @@ class TranslationLayer:
 
     def to_kratos(self) -> KratosSimulation:
         """Export this simulation to kratos."""
-        return KratosSimulation(model=_to_kratos_model(self))
+        return KratosSimulation(
+            model=_to_kratos_model(self), materials=_to_kratos_materials(self.connectors)
+        )
 
 
 def _to_kratos_model(simulation: TranslationLayer) -> Model:
@@ -50,6 +53,14 @@ def _to_kratos_model(simulation: TranslationLayer) -> Model:
             ]
         ),
     )
+
+
+def _to_kratos_materials(connectors: list[Connector]) -> list[KratosMaterial]:
+    return [
+        connector.to_kratos_material(i + 1)
+        for i, connector in enumerate(connectors)
+        if isinstance(connector, Truss)
+    ]
 
 
 def _merge_dicts(dicts: list[dict]) -> dict:

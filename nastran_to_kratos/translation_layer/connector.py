@@ -5,6 +5,7 @@ from dataclasses import dataclass
 
 from quantio import Area
 
+from nastran_to_kratos.kratos.material import KratosMaterial
 from nastran_to_kratos.kratos.model import Element, SubModel
 from nastran_to_kratos.nastran.bulk_data import BulkDataSection
 from nastran_to_kratos.nastran.bulk_data.entries import Crod, Mat1, Prod
@@ -51,6 +52,21 @@ class Truss(Connector):
         """Export this truss to a kratos sub-model."""
         return SubModel(
             nodes=[self.first_point_index, self.second_point_index], elements=[element_index]
+        )
+
+    def to_kratos_material(self, truss_id: int) -> KratosMaterial:
+        """Export this truss to a kratos material."""
+        variables = {"CROSS_SECTION": self.cross_section.square_millimeters}
+
+        if self.material.young_modulus is not None:
+            variables["YOUNG_MODULUS"] = self.material.young_modulus.megapascal
+
+        return KratosMaterial(
+            model_part_name=f"truss_{truss_id}",
+            properties_id=0,
+            material_name=self.material.name,
+            constitutive_law="TrussConstitutiveLaw",
+            variables=variables,
         )
 
 

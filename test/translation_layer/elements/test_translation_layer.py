@@ -99,7 +99,7 @@ def test_from_nastran__loads():
 def test_to_kratos__model():
     translation_layer = TranslationLayer(
         nodes=[
-            Point(1, Length.zero(), Length.zero(), Length.zero()),
+            Point.origin(1),
             Point(2, Length(meters=1), Length.zero(), Length.zero()),
         ],
         connectors=[
@@ -140,72 +140,64 @@ def test_to_kratos__model():
     )
 
 
-# def test_to_kratos__materials():
-#     translation_layer = TranslationLayer(
-#         elements=[
-#             Element(
-#                 nodes=[Point(0, Length.zero(), Length.zero(), Length.zero())],
-#                 material=Material(name="Steel", young_modulus=Pressure(gigapascal=210)),
-#                 connectors=[
-#                     Truss(
-#                         first_point_index=0,
-#                         second_point_index=0,
-#                         cross_section=Area(square_millimeters=35),
-#                     ),
-#                     Truss(
-#                         first_point_index=0,
-#                         second_point_index=0,
-#                         cross_section=Area(square_millimeters=50),
-#                     ),
-#                 ],
-#             ),
-#             Element(
-#                 nodes=[Point(1, Length.zero(), Length.zero(), Length.zero())],
-#                 material=Material(name="Aluminum", young_modulus=Pressure(gigapascal=69)),
-#                 connectors=[
-#                     Truss(
-#                         first_point_index=1,
-#                         second_point_index=1,
-#                         cross_section=Area(square_millimeters=22),
-#                     ),
-#                 ],
-#             ),
-#         ],
-#     )
+def test_to_kratos__materials():
+    translation_layer = TranslationLayer(
+        nodes=[Point.origin(1), Point.origin(2)],
+        connectors=[
+            Truss(
+                first_point_index=1,
+                second_point_index=2,
+                cross_section=Area(square_millimeters=35),
+                material=Material(name="Steel", young_modulus=Pressure(gigapascal=210)),
+            ),
+            Truss(
+                first_point_index=1,
+                second_point_index=2,
+                cross_section=Area(square_millimeters=50),
+                material=Material(name="Steel", young_modulus=Pressure(gigapascal=210)),
+            ),
+            Truss(
+                first_point_index=1,
+                second_point_index=1,
+                cross_section=Area(square_millimeters=22),
+                material=Material(name="Aluminum", young_modulus=Pressure(gigapascal=69)),
+            ),
+        ],
+    )
 
-#     actual = translation_layer.to_kratos()
-#     assert actual.materials == [
-#         KratosMaterial(
-#             model_part_name="truss_1",
-#             properties_id=0,
-#             material_name="Steel",
-#             constitutive_law="TrussConstitutiveLaw",
-#             variables={
-#                 "YOUNG_MODULUS": 210_000,
-#                 "CROSS_SECTION": 35,
-#             },
-#         ),
-#         KratosMaterial(
-#             model_part_name="truss_2",
-#             properties_id=0,
-#             material_name="Steel",
-#             constitutive_law="TrussConstitutiveLaw",
-#             variables={
-#                 "YOUNG_MODULUS": 210_000,
-#                 "CROSS_SECTION": 50,
-#             },
-#         ),
-#         KratosMaterial(
-#             model_part_name="truss_3",
-#             properties_id=0,
-#             material_name="Aluminum",
-#             constitutive_law="TrussConstitutiveLaw",
-#             variables={
-#                 "YOUNG_MODULUS": 69_000,
-#                 "CROSS_SECTION": 22,
-#             },
-#         ),
-#     ]
+    actual = translation_layer.to_kratos()
+    assert actual.materials == [
+        KratosMaterial(
+            model_part_name="truss_1",
+            properties_id=0,
+            material_name="Steel",
+            constitutive_law="TrussConstitutiveLaw",
+            variables={
+                "YOUNG_MODULUS": 210_000,
+                "CROSS_SECTION": 35,
+            },
+        ),
+        KratosMaterial(
+            model_part_name="truss_2",
+            properties_id=0,
+            material_name="Steel",
+            constitutive_law="TrussConstitutiveLaw",
+            variables={
+                "YOUNG_MODULUS": 210_000,
+                "CROSS_SECTION": 50,
+            },
+        ),
+        KratosMaterial(
+            model_part_name="truss_3",
+            properties_id=0,
+            material_name="Aluminum",
+            constitutive_law="TrussConstitutiveLaw",
+            variables={
+                "YOUNG_MODULUS": 69_000,
+                "CROSS_SECTION": 22,
+            },
+        ),
+    ]
 
 
 if __name__ == "__main__":
