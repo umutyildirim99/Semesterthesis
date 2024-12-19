@@ -35,9 +35,9 @@ class Point:
         """Construct this class from nastran."""
         return Point(
             id=grid.id,
-            x=Length(millimeters=grid.x3),
+            x=Length(millimeters=grid.x1),
             y=Length(millimeters=grid.x2),
-            z=Length(millimeters=grid.x1),
+            z=Length(millimeters=grid.x3),
         )
 
     def to_kratos(self) -> Node:

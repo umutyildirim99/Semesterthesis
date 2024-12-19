@@ -12,7 +12,7 @@ def test_from_nastran():
     grid = Grid(id=1, x1=1000, x2=2000, x3=3000)
 
     actual = Point.from_nastran(grid)
-    assert actual == Point(id=1, x=Length(meters=3), y=Length(meters=2), z=Length(meters=1))
+    assert actual == Point(id=1, x=Length(meters=1), y=Length(meters=2), z=Length(meters=3))
 
 
 def test_nodes_from_nastran__two_consecutive_points():

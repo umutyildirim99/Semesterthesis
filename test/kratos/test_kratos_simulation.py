@@ -24,7 +24,7 @@ def test_write_to_directory__x_movable_rod__model(tmp_path):
             elements={"TrussLinearElement3D2N": {1: Element(0, [1, 2])}},
             conditions={"PointLoadCondition2D1N": {1: Condition(0, [2])}},
             sub_models={
-                "Truss": SubModel(nodes=[1, 2], elements=[1]),
+                "truss_1": SubModel(nodes=[1, 2], elements=[1]),
                 "constraint_1": SubModel(nodes=[1]),
                 "constraint_2": SubModel(nodes=[2]),
                 "load_1": SubModel(nodes=[2], conditions=[1]),
