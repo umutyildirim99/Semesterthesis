@@ -19,7 +19,7 @@ class Material:
     def from_nastran(cls, mat1: Mat1) -> Material:
         """Construct this class from nastran."""
         return Material(
-            name=f"Mat1_{mat1.mid}",
+            name=f"MAT1_{mat1.mid}",
             young_modulus=Pressure(megapascal=mat1.e) if mat1.e is not None else None,
         )
 

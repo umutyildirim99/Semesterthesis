@@ -53,7 +53,7 @@ def test_write_to_directory__x_movable_rod__materials(tmp_path):
                 properties_id=0,
                 material_name="MAT1_1",
                 constitutive_law="TrussConstitutiveLaw",
-                variables={"YOUNG_MODULUS": 210000.0, "DENSITY": 7850, "CROSS_AREA": 350},
+                variables={"YOUNG_MODULUS": 210000.0, "DENSITY": 0, "CROSS_AREA": 350},
             )
         ]
     )

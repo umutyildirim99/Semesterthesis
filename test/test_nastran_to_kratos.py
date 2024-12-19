@@ -22,6 +22,7 @@ def test_integration__x_movable_rod(tmp_path):
     assert read_json(output_dir / "simulation_parameters.json") == read_json(
         ground_truth_dir / "simulation_parameters.json"
     )
+    assert read_json(output_dir / "materials.json") == read_json(ground_truth_dir / "materials.json")
 
 
 if __name__ == "__main__":

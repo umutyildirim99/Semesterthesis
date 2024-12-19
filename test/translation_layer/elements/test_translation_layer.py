@@ -142,33 +142,36 @@ def test_to_kratos__materials():
     actual = translation_layer.to_kratos()
     assert actual.materials == [
         KratosMaterial(
-            model_part_name="truss_1",
+            model_part_name="Structure.truss_1",
             properties_id=0,
             material_name="Steel",
             constitutive_law="TrussConstitutiveLaw",
             variables={
                 "YOUNG_MODULUS": 210_000,
-                "CROSS_SECTION": 35,
+                "CROSS_AREA": 35,
+                "DENSITY": 0,
             },
         ),
         KratosMaterial(
-            model_part_name="truss_2",
+            model_part_name="Structure.truss_2",
             properties_id=0,
             material_name="Steel",
             constitutive_law="TrussConstitutiveLaw",
             variables={
                 "YOUNG_MODULUS": 210_000,
-                "CROSS_SECTION": 50,
+                "CROSS_AREA": 50,
+                "DENSITY": 0,
             },
         ),
         KratosMaterial(
-            model_part_name="truss_3",
+            model_part_name="Structure.truss_3",
             properties_id=0,
             material_name="Aluminum",
             constitutive_law="TrussConstitutiveLaw",
             variables={
                 "YOUNG_MODULUS": 69_000,
-                "CROSS_SECTION": 22,
+                "CROSS_AREA": 22,
+                "DENSITY": 0,
             },
         ),
     ]

@@ -13,7 +13,7 @@ def test_from_nastran():
     mat1 = Mat1(mid=1, e=210_000)
 
     actual = Material.from_nastran(mat1)
-    assert actual == Material(name="Mat1_1", young_modulus=Pressure(gigapascal=210))
+    assert actual == Material(name="MAT1_1", young_modulus=Pressure(gigapascal=210))
 
 
 def test_materials_from_nastran__two_consecutive_materials():

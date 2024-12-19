@@ -22,7 +22,7 @@ def test_truss_from_nastran():
         first_point_index=2,
         second_point_index=3,
         cross_section=Area(square_millimeters=350.0),
-        material=Material(name="Mat1_0", young_modulus=Pressure(megapascal=210_000)),
+        material=Material(name="MAT1_0", young_modulus=Pressure(megapascal=210_000)),
     )
 
 

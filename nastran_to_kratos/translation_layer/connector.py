@@ -56,13 +56,13 @@ class Truss(Connector):
 
     def to_kratos_material(self, truss_id: int) -> KratosMaterial:
         """Export this truss to a kratos material."""
-        variables = {"CROSS_SECTION": self.cross_section.square_millimeters}
+        variables = {"CROSS_AREA": self.cross_section.square_millimeters, "DENSITY": 0}
 
         if self.material.young_modulus is not None:
             variables["YOUNG_MODULUS"] = self.material.young_modulus.megapascal
 
         return KratosMaterial(
-            model_part_name=f"truss_{truss_id}",
+            model_part_name=f"Structure.truss_{truss_id}",
             properties_id=0,
             material_name=self.material.name,
             constitutive_law="TrussConstitutiveLaw",
