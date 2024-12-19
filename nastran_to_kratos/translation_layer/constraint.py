@@ -3,6 +3,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 
 from nastran_to_kratos.kratos.model import SubModel
+from nastran_to_kratos.kratos.simulation_parameters import KratosConstraint
 from nastran_to_kratos.nastran.bulk_data import BulkDataSection
 from nastran_to_kratos.nastran.bulk_data.entries import Spc
 
@@ -35,6 +36,18 @@ class Constraint:
     def to_kratos_submodel(self) -> SubModel:
         """Export this constraint to a kratos sub-model."""
         return SubModel(nodes=[self.node_id])
+
+    def to_kratos_constraint(self, constraint_index: int) -> KratosConstraint:
+        """Export this constraint to kratos."""
+        return KratosConstraint(
+            model_part_name=f"constraint_{constraint_index}",
+            constrained_per_axis=self.translation_by_axis,
+            value_per_axis=(
+                0.0 if self.translation_by_axis[0] else None,
+                0.0 if self.translation_by_axis[1] else None,
+                0.0 if self.translation_by_axis[2] else None,
+            ),
+        )
 
 
 def constraints_from_nastran(bulk_data: BulkDataSection) -> list[Constraint]:

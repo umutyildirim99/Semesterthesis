@@ -70,32 +70,6 @@ def test_from_nastran__loads():
     assert actual.loads == [Load.from_nastran(force1), Load.from_nastran(force2)]
 
 
-# def test_to_kratos__simulation_parameters():
-#     translation_layer = TranslationLayer(
-#         elements=[Element(nodes=[Point(0, Length.zero(), Length.zero(), Length.zero())])],
-#         constraints=[
-#             Constraint(
-#                 node_id=0,
-#                 translation_by_axis=(True, True, True),
-#                 rotation_by_axis=(False, False, False),
-#             )
-#         ],
-#         loads=[Load(node_id=0, modulus=40_000, direction=(1, 0, 0))],
-#     )
-
-#     actual = translation_layer.to_kratos()
-#     assert actual.parameters == SimulationParameters(
-#         constraints=[
-#             KratosConstraint(
-#                 model_part_name="element_0",
-#                 constrained_per_axis=(True, True, True),
-#                 value_per_axis=(0, 0, 0),
-#             )
-#         ],
-#         loads=[KratosLoad(model_part_name="element_0", modulus=40_000, direction=(1, 0, 0))],
-#     )
-
-
 def test_to_kratos__model():
     translation_layer = TranslationLayer(
         nodes=[
@@ -198,6 +172,32 @@ def test_to_kratos__materials():
             },
         ),
     ]
+
+
+def test_to_kratos__simulation_parameters():
+    translation_layer = TranslationLayer(
+        nodes=[Point.origin(1)],
+        constraints=[
+            Constraint(
+                node_id=1,
+                translation_by_axis=(True, True, True),
+                rotation_by_axis=(False, False, False),
+            )
+        ],
+        loads=[Load(node_id=1, modulus=40_000, direction=(1, 0, 0))],
+    )
+
+    actual = translation_layer.to_kratos()
+    assert actual.parameters == SimulationParameters(
+        constraints=[
+            KratosConstraint(
+                model_part_name="constraint_1",
+                constrained_per_axis=(True, True, True),
+                value_per_axis=(0, 0, 0),
+            )
+        ],
+        loads=[KratosLoad(model_part_name="load_1", modulus=40_000, direction=(1, 0, 0))],
+    )
 
 
 if __name__ == "__main__":
