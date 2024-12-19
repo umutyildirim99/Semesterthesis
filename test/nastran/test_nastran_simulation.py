@@ -46,7 +46,7 @@ def test_from_path__x_movable_rod():
                 Mat1(mid=1, e=210000.0, g=0.3),
                 Spc(sid=2, g1=1, c1=12345, d1=0.0, g2=None, c2=None, d2=None),
                 Spc(sid=2, g1=2, c1=2345, d1=0.0, g2=None, c2=None, d2=None),
-                Force(sid=1, g=2, cid=0, f=1.0, n1=40000.0, n2=0.0, n3=0.0),
+                Force(sid=1, g=2, cid=0, f=40000.0, n1=1.0, n2=0.0, n3=0.0),
             ]
         ),
     )

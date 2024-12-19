@@ -38,7 +38,7 @@
                 "kratos_module": "KratosMultiphysics",
                 "process_name": "AssignVectorVariableProcess",
                 "Parameters": {
-                    "model_part_name": "Structure.SPC_Group_Node1",
+                    "model_part_name": "Structure.constraint_1",
                     "variable_name": "DISPLACEMENT",
                     "interval": [
                         0.0,
@@ -61,7 +61,7 @@
                 "kratos_module": "KratosMultiphysics",
                 "process_name": "AssignVectorVariableProcess",
                 "Parameters": {
-                    "model_part_name": "Structure.SPC_Group_Node2",
+                    "model_part_name": "Structure.constraint_2",
                     "variable_name": "DISPLACEMENT",
                     "interval": [
                         0.0,
@@ -87,7 +87,7 @@
                 "check": "DirectorVectorNonZero direction",
                 "process_name": "ApplyVectorByDirectionToConditionProcess",
                 "Parameters": {
-                    "model_part_name": "Structure.xForce_Node2",
+                    "model_part_name": "Structure.load_1",
                     "variable_name": "POINT_LOAD",
                     "interval": [
                         0.0,

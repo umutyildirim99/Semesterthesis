@@ -2,7 +2,7 @@ from dataclasses import dataclass
 
 
 @dataclass
-class Load:
+class KratosLoad:
     """A mechanical load applied to the model."""
 
     model_part_name: str

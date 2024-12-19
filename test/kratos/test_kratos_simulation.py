@@ -5,8 +5,12 @@ import pytest
 
 from nastran_to_kratos.kratos import KratosSimulation
 from nastran_to_kratos.kratos.model import Model, Node, Element, Condition, SubModel
-from nastran_to_kratos.kratos.material import Material
-from nastran_to_kratos.kratos.simulation_parameters import Constraint, Load, SimulationParameters
+from nastran_to_kratos.kratos.material import KratosMaterial
+from nastran_to_kratos.kratos.simulation_parameters import (
+    KratosConstraint,
+    KratosLoad,
+    SimulationParameters,
+)
 
 
 def test_write_to_directory__x_movable_rod__model(tmp_path):
@@ -20,10 +24,10 @@ def test_write_to_directory__x_movable_rod__model(tmp_path):
             elements={"TrussLinearElement3D2N": {1: Element(0, [1, 2])}},
             conditions={"PointLoadCondition2D1N": {1: Condition(0, [2])}},
             sub_models={
-                "Truss": SubModel(nodes=[1, 2], elements=[1]),
-                "SPC_Group_Node1": SubModel(nodes=[1]),
-                "SPC_Group_Node2": SubModel(nodes=[2]),
-                "xForce_Node2": SubModel(nodes=[2], conditions=[1]),
+                "truss_1": SubModel(nodes=[1, 2], elements=[1]),
+                "constraint_1": SubModel(nodes=[1]),
+                "constraint_2": SubModel(nodes=[2]),
+                "load_1": SubModel(nodes=[2], conditions=[1]),
             },
         )
     )
@@ -44,12 +48,12 @@ def test_write_to_directory__x_movable_rod__materials(tmp_path):
 
     kratos_simulation = KratosSimulation(
         materials=[
-            Material(
-                model_part_name="Structure.Truss",
+            KratosMaterial(
+                model_part_name="Structure.truss_1",
                 properties_id=0,
                 material_name="MAT1_1",
                 constitutive_law="TrussConstitutiveLaw",
-                variables={"YOUNG_MODULUS": 210000.0, "DENSITY": 7850, "CROSS_AREA": 350},
+                variables={"YOUNG_MODULUS": 210000.0, "DENSITY": 0, "CROSS_AREA": 350},
             )
         ]
     )
@@ -73,20 +77,20 @@ def test_write_to_directory__x_movable_rod__parameters(tmp_path):
     kratos_simulation = KratosSimulation(
         parameters=SimulationParameters(
             constraints=[
-                Constraint(
-                    model_part_name="Structure.SPC_Group_Node1",
+                KratosConstraint(
+                    model_part_name="Structure.constraint_1",
                     constrained_per_axis=(True, True, True),
                     value_per_axis=(0.0, 0.0, 0.0),
                 ),
-                Constraint(
-                    model_part_name="Structure.SPC_Group_Node2",
+                KratosConstraint(
+                    model_part_name="Structure.constraint_2",
                     constrained_per_axis=(False, True, True),
                     value_per_axis=(None, 0.0, 0.0),
                 ),
             ],
             loads=[
-                Load(
-                    model_part_name="Structure.xForce_Node2",
+                KratosLoad(
+                    model_part_name="Structure.load_1",
                     modulus=40_000.0,
                     direction=(1.0, 0.0, 0.0),
                 )

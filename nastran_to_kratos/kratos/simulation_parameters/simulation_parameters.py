@@ -1,15 +1,15 @@
 from dataclasses import dataclass
 
-from .constraint import Constraint
-from .load import Load
+from .constraint import KratosConstraint
+from .load import KratosLoad
 
 
 @dataclass
 class SimulationParameters:
     """Main container of information about the kratos simulation."""
 
-    constraints: list[Constraint]
-    loads: list[Load]
+    constraints: list[KratosConstraint]
+    loads: list[KratosLoad]
 
     def to_json(self) -> dict:
         """Export this class to a dictionary in a Kratos compatible format."""

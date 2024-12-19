@@ -63,3 +63,8 @@ class Mat1(_BulkDataEntry):
             ss=cls._read_optional_field(file_content, 11, float, None),
             mcsid=cls._read_optional_field(file_content, 12, int, None),
         )
+
+    def __hash__(self) -> int:
+        """Return a hash of this instance."""
+        attributes = tuple(sorted(vars(self).items()))
+        return hash(attributes)

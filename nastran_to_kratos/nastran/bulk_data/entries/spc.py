@@ -18,16 +18,16 @@ class Spc(_BulkDataEntry):
     c1: int
     "Component number."
 
-    d1: float
+    d1: float = 0.0
     "Value of enforced motion for components g1 at grid c1."
 
-    g2: int | None
+    g2: int | None = None
     "Grid or scalar point identification number."
 
-    c2: int | None
+    c2: int | None = None
     "Component number."
 
-    d2: float | None
+    d2: float | None = None
     "Value of enforced motion for components g2 at grid c2."
 
     @classmethod
@@ -42,3 +42,8 @@ class Spc(_BulkDataEntry):
             c2=cls._read_optional_field(file_content, 6, int, None),
             d2=cls._read_optional_field(file_content, 7, float, None),
         )
+
+    def __hash__(self) -> int:
+        """Return a hash of this instance."""
+        attributes = tuple(sorted(vars(self).items()))
+        return hash(attributes)

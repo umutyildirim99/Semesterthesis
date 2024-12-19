@@ -7,7 +7,8 @@ readme = "README.md"
 repository = "https://gitlab.lrz.de/tobias_group/nastran_to_kratos"
 
 [tool.poetry.dependencies]
-python = ">=3.10, <4.0"
+python = ">=3.10, <3.14"
+quantio = ">=0.18, <1.0"
 
 [tool.poetry.group.dev.dependencies]
 mypy-extensions = "<2.0"
@@ -27,6 +28,7 @@ ignore = [
     "COM812",  # conflicts with ruff formatter
 
     "D100",    # imo no docstrings are necessary in public modules
+    "D104",    # imo no docstrings are necessary in public packages
     "D107",    # __init__ docstrings are not necessary
     "D203",    # incompatible with D211
     "D213",    # incompatible with D212

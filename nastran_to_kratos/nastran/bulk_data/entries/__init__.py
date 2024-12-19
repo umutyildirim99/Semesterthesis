@@ -8,4 +8,4 @@ from .mat1 import Mat1
 from .prod import Prod
 from .spc import Spc
 
-__all__ = ["_BulkDataEntry", "Crod", "Force", "Grid", "Mat1", "Prod", "Spc"]
+__all__ = ["Crod", "Force", "Grid", "Mat1", "Prod", "Spc", "_BulkDataEntry"]

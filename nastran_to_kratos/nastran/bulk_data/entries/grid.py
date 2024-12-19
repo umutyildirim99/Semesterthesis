@@ -48,3 +48,8 @@ class Grid(_BulkDataEntry):
             ps=cls._read_optional_field(file_content, 7, str, None),
             seid=cls._read_optional_field(file_content, 8, int, 0),
         )
+
+    def __hash__(self) -> int:
+        """Return a hash of this instance."""
+        attributes = tuple(sorted(vars(self).items()))
+        return hash(attributes)

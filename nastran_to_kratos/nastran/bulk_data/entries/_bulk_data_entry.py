@@ -50,3 +50,7 @@ class _BulkDataEntry(ABC):
         if field_is_empty:
             return default_value
         return target_class(raw_entry[field_index].strip())
+
+    @abstractmethod
+    def __hash__(self) -> int:
+        raise NotImplementedError

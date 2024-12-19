@@ -2,7 +2,7 @@ import json
 from dataclasses import dataclass
 from pathlib import Path
 
-from .material import Material
+from .material import KratosMaterial
 from .model import Model
 from .simulation_parameters import SimulationParameters
 
@@ -17,7 +17,7 @@ class KratosSimulation:
     model: Model | None = None
     "The model used in the simulation."
 
-    materials: list[Material] | None = None
+    materials: list[KratosMaterial] | None = None
     "The materials for each model part."
 
     def write_to_directory(self, output_dir: Path) -> None:
@@ -37,7 +37,7 @@ def _write_model_file(model: Model | None, path: Path) -> None:
         model_file.writelines(_add_line_break_to_every_line(model.to_mdpa()))
 
 
-def _write_materials_file(materials: list[Material] | None, path: Path) -> None:
+def _write_materials_file(materials: list[KratosMaterial] | None, path: Path) -> None:
     if materials is None:
         return
 

@@ -2,12 +2,12 @@ from dataclasses import dataclass
 
 
 @dataclass
-class Constraint:
+class KratosConstraint:
     """Fixation of an element."""
 
     model_part_name: str
-    constrained_per_axis: tuple[bool | None, bool | None, bool | None]
-    value_per_axis: tuple[float, float, float]
+    constrained_per_axis: tuple[bool, bool, bool]
+    value_per_axis: tuple[float | None, float | None, float | None]
 
     def to_json(self) -> dict:
         """Export this constraint to a dictionary in a Kratos compatible format."""

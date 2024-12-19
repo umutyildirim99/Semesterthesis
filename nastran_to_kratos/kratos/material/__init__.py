@@ -1,5 +1,5 @@
 """Kratos material class."""
 
-from .material import Material
+from .material import KratosMaterial
 
-__all__ = ["Material"]
+__all__ = ["KratosMaterial"]
