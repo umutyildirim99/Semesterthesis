@@ -191,12 +191,12 @@ def test_to_kratos__simulation_parameters():
     assert actual.parameters == SimulationParameters(
         constraints=[
             KratosConstraint(
-                model_part_name="constraint_1",
+                model_part_name="Structure.constraint_1",
                 constrained_per_axis=(True, True, True),
                 value_per_axis=(0, 0, 0),
             )
         ],
-        loads=[KratosLoad(model_part_name="load_1", modulus=40_000, direction=(1, 0, 0))],
+        loads=[KratosLoad(model_part_name="Structure.load_1", modulus=40_000, direction=(1, 0, 0))],
     )
 
 

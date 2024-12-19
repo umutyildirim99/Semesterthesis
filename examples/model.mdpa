@@ -24,19 +24,19 @@ Begin SubModelPart Truss
     End SubModelPartElements
 End SubModelPart
 
-Begin SubModelPart SPC_Group_Node1
+Begin SubModelPart constraint_1
     Begin SubModelPartNodes
         1
     End SubModelPartNodes
 End SubModelPart
 
-Begin SubModelPart SPC_Group_Node2
+Begin SubModelPart constraint_2
     Begin SubModelPartNodes
         2
     End SubModelPartNodes
 End SubModelPart
 
-Begin SubModelPart xForce_Node2
+Begin SubModelPart load_1
     Begin SubModelPartNodes
         2
     End SubModelPartNodes

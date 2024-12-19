@@ -36,7 +36,7 @@ class Load:
     def to_kratos_load(self, load_index: int) -> KratosLoad:
         """Export this load to kratos."""
         return KratosLoad(
-            model_part_name=f"load_{load_index}",
+            model_part_name=f"Structure.load_{load_index}",
             modulus=self.modulus,
             direction=self.direction,
         )

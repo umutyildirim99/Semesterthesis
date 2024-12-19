@@ -1,7 +1,7 @@
 {
     "properties": [
         {
-            "model_part_name": "Structure.Truss",
+            "model_part_name": "Structure.truss_1",
             "properties_id": 0,
             "Material": {
                 "name": "MAT1_1",

@@ -40,7 +40,7 @@ class Constraint:
     def to_kratos_constraint(self, constraint_index: int) -> KratosConstraint:
         """Export this constraint to kratos."""
         return KratosConstraint(
-            model_part_name=f"constraint_{constraint_index}",
+            model_part_name=f"Structure.constraint_{constraint_index}",
             constrained_per_axis=self.translation_by_axis,
             value_per_axis=(
                 0.0 if self.translation_by_axis[0] else None,
