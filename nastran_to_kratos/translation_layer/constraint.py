@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 
+from nastran_to_kratos.kratos.model import SubModel
 from nastran_to_kratos.nastran.bulk_data import BulkDataSection
 from nastran_to_kratos.nastran.bulk_data.entries import Spc
 
@@ -30,6 +31,10 @@ class Constraint:
                 "6" in str(spc.c1),
             ),
         )
+
+    def to_kratos_submodel(self) -> SubModel:
+        """Export this constraint to a kratos sub-model."""
+        return SubModel(nodes=[self.node_id])
 
 
 def constraints_from_nastran(bulk_data: BulkDataSection) -> list[Constraint]:

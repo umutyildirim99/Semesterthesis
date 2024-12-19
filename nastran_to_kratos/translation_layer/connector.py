@@ -5,6 +5,7 @@ from dataclasses import dataclass
 
 from quantio import Area
 
+from nastran_to_kratos.kratos.model import Element, SubModel
 from nastran_to_kratos.nastran.bulk_data import BulkDataSection
 from nastran_to_kratos.nastran.bulk_data.entries import Crod, Mat1, Prod
 
@@ -18,6 +19,10 @@ class Connector(ABC):
     first_point_index: int
     second_point_index: int
     material: Material
+
+    def to_kratos_element(self) -> Element:
+        """Export this connector to a kratos element."""
+        return Element(property_id=0, node_ids=[self.first_point_index, self.second_point_index])
 
 
 @dataclass
@@ -40,6 +45,12 @@ class Truss(Connector):
             second_point_index=crod.g2,
             cross_section=Area(square_millimeters=prod.a),
             material=Material.from_nastran(mat1),
+        )
+
+    def to_kratos_submodel(self, element_index: int) -> SubModel:
+        """Export this truss to a kratos sub-model."""
+        return SubModel(
+            nodes=[self.first_point_index, self.second_point_index], elements=[element_index]
         )
 
 

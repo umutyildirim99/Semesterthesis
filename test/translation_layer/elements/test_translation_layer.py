@@ -23,7 +23,7 @@ from nastran_to_kratos.translation_layer import (
     Load,
     nodes_from_nastran,
     trusses_from_nastran,
-    material,
+    Material,
 )
 
 
@@ -96,48 +96,48 @@ def test_from_nastran__loads():
 #     )
 
 
-# def test_to_kratos__model():
-#     translation_layer = TranslationLayer(
-#         elements=[
-#             Element(
-#                 nodes=[
-#                     Point(0, Length.zero(), Length.zero(), Length.zero()),
-#                     Point(1, Length(meters=1), Length.zero(), Length.zero()),
-#                 ],
-#                 connectors=[
-#                     Truss(first_point_index=0, second_point_index=1, cross_section=Area.zero())
-#                 ],
-#                 material=Material(name="Steel", young_modulus=Pressure(gigapascal=210)),
-#             )
-#         ],
-#         constraints=[
-#             Constraint(
-#                 node_id=0,
-#                 translation_by_axis=(True, True, True),
-#                 rotation_by_axis=(False, False, False),
-#             ),
-#             Constraint(
-#                 node_id=1,
-#                 translation_by_axis=(False, True, True),
-#                 rotation_by_axis=(False, False, False),
-#             ),
-#         ],
-#         loads=[Load(node_id=0, modulus=40_000, direction=(1, 0, 0))],
-#     )
+def test_to_kratos__model():
+    translation_layer = TranslationLayer(
+        nodes=[
+            Point(1, Length.zero(), Length.zero(), Length.zero()),
+            Point(2, Length(meters=1), Length.zero(), Length.zero()),
+        ],
+        connectors=[
+            Truss(
+                first_point_index=1,
+                second_point_index=2,
+                cross_section=Area.zero(),
+                material=Material(),
+            )
+        ],
+        constraints=[
+            Constraint(
+                node_id=1,
+                translation_by_axis=(True, True, True),
+                rotation_by_axis=(False, False, False),
+            ),
+            Constraint(
+                node_id=2,
+                translation_by_axis=(False, True, True),
+                rotation_by_axis=(False, False, False),
+            ),
+        ],
+        loads=[Load(node_id=1, modulus=40_000, direction=(1, 0, 0))],
+    )
 
-#     actual = translation_layer.to_kratos()
-#     assert actual.model == Model(
-#         properties={0: {}},
-#         nodes={1: Node(0, 0, 0), 2: Node(1000, 0, 0)},
-#         elements={"element_1": {1: KratosElement(property_id=0, node_ids=[1, 2])}},
-#         conditions={"condition_1": {1: Condition(property_id=0, node_ids=[1])}},
-#         sub_models={
-#             "truss_1": SubModel(nodes=[1, 2], elements=[1]),
-#             "constraint_1": SubModel(nodes=[1]),
-#             "constraint_2": SubModel(nodes=[2]),
-#             "load_1": SubModel(nodes=[1], conditions=[1]),
-#         },
-#     )
+    actual = translation_layer.to_kratos()
+    assert actual.model == Model(
+        properties={0: {}},
+        nodes={1: Node(0, 0, 0), 2: Node(1000, 0, 0)},
+        elements={"TrussLinearElement3D2N": {1: KratosElement(property_id=0, node_ids=[1, 2])}},
+        conditions={"PointLoadCondition2D1N": {1: Condition(property_id=0, node_ids=[1])}},
+        sub_models={
+            "truss_1": SubModel(nodes=[1, 2], elements=[1]),
+            "constraint_1": SubModel(nodes=[1]),
+            "constraint_2": SubModel(nodes=[2]),
+            "load_1": SubModel(nodes=[1], conditions=[1]),
+        },
+    )
 
 
 # def test_to_kratos__materials():

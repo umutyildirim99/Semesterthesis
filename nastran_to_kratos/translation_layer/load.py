@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 
+from nastran_to_kratos.kratos.model import Condition, SubModel
 from nastran_to_kratos.nastran.bulk_data import BulkDataSection
 from nastran_to_kratos.nastran.bulk_data.entries import Force
 
@@ -22,6 +23,14 @@ class Load:
             modulus=force.f,
             direction=(force.n1, force.n2, force.n3),
         )
+
+    def to_kratos_condition(self) -> Condition:
+        """Export this load to a kratos condition."""
+        return Condition(property_id=0, node_ids=[self.node_id])
+
+    def to_kratos_submodel(self, condition_index: int) -> SubModel:
+        """Export this load to a kratos sub-model."""
+        return SubModel(nodes=[self.node_id], conditions=[condition_index])
 
 
 def loads_from_nastran(bulk_data: BulkDataSection) -> list[Load]:

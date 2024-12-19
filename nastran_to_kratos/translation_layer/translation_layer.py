@@ -2,9 +2,11 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 
+from nastran_to_kratos.kratos.kratos_simulation import KratosSimulation
+from nastran_to_kratos.kratos.model import Condition, Element, Model, SubModel
 from nastran_to_kratos.nastran import NastranSimulation
 
-from .connector import Connector, trusses_from_nastran
+from .connector import Connector, Truss, trusses_from_nastran
 from .constraint import Constraint, constraints_from_nastran
 from .load import Load, loads_from_nastran
 from .point import Point, nodes_from_nastran
@@ -28,3 +30,63 @@ class TranslationLayer:
             constraints=constraints_from_nastran(nastran.bulk_data),
             loads=loads_from_nastran(nastran.bulk_data),
         )
+
+    def to_kratos(self) -> KratosSimulation:
+        """Export this simulation to kratos."""
+        return KratosSimulation(model=_to_kratos_model(self))
+
+
+def _to_kratos_model(simulation: TranslationLayer) -> Model:
+    return Model(
+        properties={0: {}},
+        nodes={point.id: point.to_kratos() for point in simulation.nodes},
+        elements=_to_kratos_elements(simulation.connectors),
+        conditions=_to_kratos_conditions(simulation.loads),
+        sub_models=_merge_dicts(
+            [
+                _to_kratos_submodels_trusses(simulation.connectors),
+                _to_kratos_submodels_constraints(simulation.constraints),
+                _to_kratos_submodels_loads(simulation.loads),
+            ]
+        ),
+    )
+
+
+def _merge_dicts(dicts: list[dict]) -> dict:
+    merged_dict = {}
+    for d in dicts:
+        merged_dict.update(d)
+    return merged_dict
+
+
+def _to_kratos_elements(connectors: list[Connector]) -> dict[str, dict[int, Element]]:
+    return {
+        "TrussLinearElement3D2N": {
+            i + 1: connector.to_kratos_element() for i, connector in enumerate(connectors)
+        }
+    }
+
+
+def _to_kratos_conditions(loads: list[Load]) -> dict[str, dict[int, Condition]]:
+    return {
+        "PointLoadCondition2D1N": {i + 1: load.to_kratos_condition() for i, load in enumerate(loads)}
+    }
+
+
+def _to_kratos_submodels_trusses(connectors: list[Connector]) -> dict[str, SubModel]:
+    return {
+        f"truss_{i+1}": connector.to_kratos_submodel(i + 1)
+        for i, connector in enumerate(connectors)
+        if isinstance(connector, Truss)
+    }
+
+
+def _to_kratos_submodels_constraints(constraints: list[Constraint]) -> dict[str, SubModel]:
+    return {
+        f"constraint_{i+1}": constraint.to_kratos_submodel()
+        for i, constraint in enumerate(constraints)
+    }
+
+
+def _to_kratos_submodels_loads(loads: list[Load]) -> dict[str, SubModel]:
+    return {f"load_{i+1}": load.to_kratos_submodel(i + 1) for i, load in enumerate(loads)}
