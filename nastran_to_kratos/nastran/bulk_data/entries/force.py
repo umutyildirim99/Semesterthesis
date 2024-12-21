@@ -15,7 +15,7 @@ class Force(_BulkDataEntry):
     g: int
     "Grid point identification number."
 
-    cid: int
+    cid: int | None
     "Coordinate system identification number."
 
     f: float
@@ -36,11 +36,25 @@ class Force(_BulkDataEntry):
         return Force(
             sid=int(file_content[1]),
             g=int(file_content[2]),
-            cid=cls._read_optional_field(file_content, 3, int, 0),
+            cid=cls._read_optional_field(file_content, 3, int, None),
             f=float(file_content[4]),
             n1=float(file_content[5]),
             n2=float(file_content[6]),
             n3=float(file_content[7]),
+        )
+
+    def to_file_content(self) -> str:
+        """Export this Force into a line for saving to a nastran file."""
+        return "FORCE   " + self._fields_to_line(
+            [
+                self.sid,
+                self.g,
+                self.cid,
+                self.f,
+                self.n1,
+                self.n2,
+                self.n3,
+            ]
         )
 
     def __hash__(self) -> int:

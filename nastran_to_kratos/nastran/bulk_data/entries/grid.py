@@ -50,7 +50,7 @@ class Grid(_BulkDataEntry):
         )
 
     def to_file_content(self) -> str:
-        """Export this entry into a line for saving to a nastran file."""
+        """Export this Grid into a line for saving to a nastran file."""
         return "GRID    " + self._fields_to_line(
             [self.id, self.cp, self.x1, self.x2, self.x3, self.cd, self.ps, self.seid]
         )

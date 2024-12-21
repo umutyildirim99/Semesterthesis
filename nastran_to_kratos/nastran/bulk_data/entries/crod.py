@@ -32,7 +32,7 @@ class Crod(_BulkDataEntry):
         )
 
     def to_file_content(self) -> str:
-        """Export this CROD into a line for saving to a nastran file."""
+        """Export this Crod into a line for saving to a nastran file."""
         return "CROD    " + self._fields_to_line([self.eid, self.pid, self.g1, self.g2])
 
     def __hash__(self) -> int:
