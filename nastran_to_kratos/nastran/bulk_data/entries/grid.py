@@ -32,7 +32,7 @@ class Grid(_BulkDataEntry):
     """Permanent single-point constraints associated with the grid point (example: "234", "123456",
     "135")."""
 
-    seid: int = 0
+    seid: int | None = None
     """Superelement identification number."""
 
     @classmethod
@@ -46,7 +46,13 @@ class Grid(_BulkDataEntry):
             x3=cls._read_optional_field(file_content, 5, float, 0.0),
             cd=cls._read_optional_field(file_content, 6, int, None),
             ps=cls._read_optional_field(file_content, 7, str, None),
-            seid=cls._read_optional_field(file_content, 8, int, 0),
+            seid=cls._read_optional_field(file_content, 8, int, None),
+        )
+
+    def to_file_content(self) -> str:
+        """Export this entry into a line for saving to a nastran file."""
+        return "GRID    " + self._fields_to_line(
+            [self.id, self.cp, self.x1, self.x2, self.x3, self.cd, self.ps, self.seid]
         )
 
     def __hash__(self) -> int:

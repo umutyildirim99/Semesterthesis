@@ -56,11 +56,14 @@ class _BulkDataEntry(ABC):
         """Export this entry into a line for saving to a nastran file."""
         raise NotImplementedError
 
-    def _fill(self, field: str | float | None) -> str:
-        """Fill a string with spaces of length 8."""
-        if field is None:
-            return ""
-        return str(field).rjust(8)
+    def _fields_to_line(self, fields: list[str | float | None]) -> str:
+        line = ""
+        for field in fields:
+            if field is None:
+                line += " " * 8
+            else:
+                line += str(field).rjust(8)
+        return line.rstrip()
 
     @abstractmethod
     def __hash__(self) -> int:
