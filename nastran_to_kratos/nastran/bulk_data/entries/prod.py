@@ -39,6 +39,19 @@ class Prod(_BulkDataEntry):
             nsm=cls._read_optional_field(file_content, 6, float, None),
         )
 
+    def to_file_content(self) -> str:
+        """Export this Prod into a line for saving to a nastran file."""
+        return "PROD    " + self._fields_to_line(
+            [
+                self.pid,
+                self.mid,
+                self.a,
+                self.j,
+                self.c,
+                self.nsm,
+            ]
+        )
+
     def __hash__(self) -> int:
         """Return a hash of this instance."""
         attributes = tuple(sorted(vars(self).items()))
