@@ -43,6 +43,20 @@ class Spc(_BulkDataEntry):
             d2=cls._read_optional_field(file_content, 7, float, None),
         )
 
+    def to_file_content(self) -> str:
+        """Export this Spc into a line for saving to a nastran file."""
+        return "SPC     " + self._fields_to_line(
+            fields=[
+                self.sid,
+                self.g1,
+                self.c1,
+                self.d1,
+                self.g2,
+                self.c2,
+                self.d2,
+            ]
+        )
+
     def __hash__(self) -> int:
         """Return a hash of this instance."""
         attributes = tuple(sorted(vars(self).items()))

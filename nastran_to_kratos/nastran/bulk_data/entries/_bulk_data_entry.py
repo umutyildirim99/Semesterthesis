@@ -51,7 +51,7 @@ class _BulkDataEntry(ABC):
             return default_value
         return target_class(raw_entry[field_index].strip())
 
-    # @abstractmethod
+    @abstractmethod
     def to_file_content(self) -> str:
         """Export this entry into a line for saving to a nastran file."""
         raise NotImplementedError
