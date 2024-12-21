@@ -31,6 +31,16 @@ class Crod(_BulkDataEntry):
             g2=int(file_content[4]),
         )
 
+    def to_file_content(self) -> str:
+        """Export this CROD into a line for saving to a nastran file."""
+        return (
+            "CROD    "
+            + self._fill(self.eid)
+            + self._fill(self.pid)
+            + self._fill(self.g1)
+            + self._fill(self.g2)
+        )
+
     def __hash__(self) -> int:
         """Return a hash of this instance."""
         attributes = tuple(sorted(vars(self).items()))
