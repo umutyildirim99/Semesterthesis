@@ -61,9 +61,26 @@ def read_file(path: Path) -> list[str]:
     return file_content
 
 
+def remove_unimportant_lines(lines: list[str]) -> list[str]:
+    important_lines = []
+    for line in lines:
+        if line in ("", "\n"):
+            continue
+        if line.startswith(("$", "PARAM")):
+            continue
+        important_lines.append(line)
+    return important_lines
+
+
 def test_from_path__x_movable_rod(x_movable_rod, x_movable_rod_path):
     actual = NastranSimulation.from_path(x_movable_rod_path)
     assert actual == x_movable_rod
+
+
+def test_to_file_content_x_movable_rod(x_movable_rod, x_movable_rod_path):
+    ground_truth = remove_unimportant_lines(read_file(x_movable_rod_path))
+    actual = x_movable_rod.to_file_content()
+    assert actual == ground_truth
 
 
 if __name__ == "__main__":

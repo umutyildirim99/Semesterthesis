@@ -45,6 +45,15 @@ class NastranSimulation:
         with path.open() as nastran_file:
             return NastranSimulation.from_file_content(nastran_file.readlines())
 
+    def to_file_content(self) -> list[str]:
+        """Export this simulation to lines that can be stored in a nastran file."""
+        file_content = ["SOL 101", "CEND"]
+        file_content.extend(self.case_control.to_file_content())
+        file_content.append("BEGIN BULK")
+        file_content.extend(self.bulk_data.to_file_content())
+        file_content.append("ENDDATA")
+        return _add_linebreaks_to_file_content(file_content)
+
 
 def _remove_linebreak_from_file_content(file_content: list[str]) -> list[str]:
     stripped_file_content = []
@@ -55,6 +64,10 @@ def _remove_linebreak_from_file_content(file_content: list[str]) -> list[str]:
             stripped_file_content.append(line)
 
     return stripped_file_content
+
+
+def _add_linebreaks_to_file_content(file_content: list[str]) -> list[str]:
+    return [line + "\n" for line in file_content]
 
 
 def _line_should_be_skipped(line: str) -> bool:
