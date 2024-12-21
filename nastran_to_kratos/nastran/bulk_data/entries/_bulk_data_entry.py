@@ -43,7 +43,7 @@ class _BulkDataEntry(ABC):
 
         """
         try:
-            field_is_empty = raw_entry[field_index] == " " * 8
+            field_is_empty = raw_entry[field_index] in ["", " " * 8]
         except IndexError:
             field_is_empty = True
 

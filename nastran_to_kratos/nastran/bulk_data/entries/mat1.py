@@ -27,7 +27,7 @@ class Mat1(_BulkDataEntry):
     a: float | None = None
     "Thermal expansion coefficient."
 
-    tref: float = 0.0
+    tref: float | None = None
     """Reference temperature for the calculation of thermal loads, or a
     temperature-dependent thermal expansion coefficient."""
 
@@ -56,7 +56,7 @@ class Mat1(_BulkDataEntry):
             nu=cls._read_optional_field(file_content, 4, float, None),
             rho=cls._read_optional_field(file_content, 5, float, None),
             a=cls._read_optional_field(file_content, 6, float, None),
-            tref=cls._read_optional_field(file_content, 7, float, 0.0),
+            tref=cls._read_optional_field(file_content, 7, float, None),
             ge=cls._read_optional_field(file_content, 8, float, None),
             st=cls._read_optional_field(file_content, 9, float, None),
             sc=cls._read_optional_field(file_content, 10, float, None),

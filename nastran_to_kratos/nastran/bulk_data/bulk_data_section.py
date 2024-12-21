@@ -79,6 +79,10 @@ class BulkDataSection:
 
         return bulk_data
 
+    def to_file_content(self) -> list[str]:
+        """Export this section into lines for saving to a nastran file."""
+        return [entry.to_file_content() for entry in self.entries]
+
 
 def _split_short_line(line: str) -> list[str]:
     return [line[i : i + 8] for i in range(0, len(line), 8)]

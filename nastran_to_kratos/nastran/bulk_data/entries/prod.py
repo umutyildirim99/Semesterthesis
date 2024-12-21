@@ -21,7 +21,7 @@ class Prod(_BulkDataEntry):
     j: float | None = None
     "Torsional constant."
 
-    c: float = 0.0
+    c: float | None = None
     "Coefficient to determine torsional stress."
 
     nsm: float | None = None
@@ -35,7 +35,7 @@ class Prod(_BulkDataEntry):
             mid=int(file_content[2]),
             a=float(file_content[3]),
             j=cls._read_optional_field(file_content, 4, float, None),
-            c=cls._read_optional_field(file_content, 5, float, 0.0),
+            c=cls._read_optional_field(file_content, 5, float, None),
             nsm=cls._read_optional_field(file_content, 6, float, None),
         )
 

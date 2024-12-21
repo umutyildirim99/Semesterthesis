@@ -48,7 +48,7 @@ def test_read__optional_fields():
         nu=None,
         rho=None,
         a=None,
-        tref=0.0,
+        tref=None,
         ge=None,
         st=None,
         sc=None,
