@@ -21,14 +21,14 @@ def test_to_file_content__all_fields_have_values():
     force = Force(sid=2, g=5, cid=6, f=2.9, n1=0.0, n2=1.0, n3=0.0)
 
     actual = force.to_file_content()
-    assert actual == "FORCE          2       5       6     2.9     0.0     1.0     0.0"
+    assert actual == "FORCE          2       5       6     2.9       0       1       0"
 
 
 def test_to_file_content__optional_fields():
     force = Force(sid=2, g=5, cid=None, f=2.9, n1=0.0, n2=1.0, n3=0.0)
 
     actual = force.to_file_content()
-    assert actual == "FORCE          2       5             2.9     0.0     1.0     0.0"
+    assert actual == "FORCE          2       5             2.9       0       1       0"
 
 
 if __name__ == "__main__":

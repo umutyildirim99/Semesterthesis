@@ -64,6 +64,25 @@ class Mat1(_BulkDataEntry):
             mcsid=cls._read_optional_field(file_content, 12, int, None),
         )
 
+    def to_file_content(self) -> str:
+        """Export this Mat1 into a line for saving to a nastran file."""
+        return "MAT1    " + self._fields_to_line(
+            [
+                self.mid,
+                self.e,
+                self.g,
+                self.nu,
+                self.rho,
+                self.a,
+                self.tref,
+                self.ge,
+                self.st,
+                self.sc,
+                self.ss,
+                self.mcsid,
+            ]
+        )
+
     def __hash__(self) -> int:
         """Return a hash of this instance."""
         attributes = tuple(sorted(vars(self).items()))

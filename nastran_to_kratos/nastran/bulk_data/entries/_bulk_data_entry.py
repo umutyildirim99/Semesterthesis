@@ -62,7 +62,11 @@ class _BulkDataEntry(ABC):
             if field is None:
                 line += " " * 8
             else:
-                line += str(field).rjust(8)
+                field_string = str(field)
+                if field_string.endswith(".0"):
+                    field_string = field_string[:-2]
+
+                line += field_string.rjust(8)
         return line.rstrip()
 
     @abstractmethod
