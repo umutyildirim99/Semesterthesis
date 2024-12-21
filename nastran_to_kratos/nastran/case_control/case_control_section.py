@@ -45,3 +45,15 @@ class CaseControlSection:
                 case_control_section.subcases[subcase_id] = Subcase.from_file_content(subcase)
 
         return case_control_section
+
+    def to_file_content(self) -> list[str]:
+        """Export this section into lines for saving to a nastran file."""
+        file_content = self.general.to_file_content()
+        for case_id, case in self.subcases.items():
+            file_content.append(f"SUBCASE{_leftpad8(case_id)}")
+            file_content.extend(case.to_file_content())
+        return file_content
+
+
+def _leftpad8(s: str | int) -> str:
+    return str(s).rjust(8, " ")
