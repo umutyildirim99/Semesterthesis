@@ -13,6 +13,11 @@ from nastran_to_kratos.kratos.simulation_parameters import (
 )
 
 
+@pytest.fixture
+def x_movable_rod_path() -> Path:
+    return Path(__file__).parent.parent.parent / "examples"
+
+
 def test_write_to_directory__x_movable_rod__model(tmp_path):
     output_dir = tmp_path / "x_movable_rod"
     ground_truth_path = Path(__file__).parent.parent.parent / "examples" / "model.mdpa"
@@ -106,6 +111,31 @@ def test_write_to_directory__x_movable_rod__parameters(tmp_path):
         ground_truth = json.load(f)
 
     assert actual == ground_truth
+
+
+def test_from_directory__x_movable_rod__parameters(x_movable_rod_path):
+    actual = KratosSimulation.from_directory(x_movable_rod_path)
+    assert actual.parameters == SimulationParameters(
+        constraints=[
+            KratosConstraint(
+                model_part_name="Structure.constraint_1",
+                constrained_per_axis=(True, True, True),
+                value_per_axis=(0.0, 0.0, 0.0),
+            ),
+            KratosConstraint(
+                model_part_name="Structure.constraint_2",
+                constrained_per_axis=(False, True, True),
+                value_per_axis=(None, 0.0, 0.0),
+            ),
+        ],
+        loads=[
+            KratosLoad(
+                model_part_name="Structure.load_1",
+                modulus=40_000.0,
+                direction=(1.0, 0.0, 0.0),
+            )
+        ],
+    )
 
 
 if __name__ == "__main__":

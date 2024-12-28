@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from dataclasses import dataclass
 
 
@@ -8,6 +10,15 @@ class KratosLoad:
     model_part_name: str
     modulus: float
     direction: tuple[float, float, float]
+
+    @classmethod
+    def from_json(cls, json: dict) -> KratosLoad:
+        """Construct this class from Kratos json content."""
+        return KratosLoad(
+            model_part_name=json["Parameters"]["model_part_name"],
+            modulus=json["Parameters"]["modulus"],
+            direction=tuple(json["Parameters"]["direction"]),
+        )
 
     def to_json(self) -> dict:
         """Export this load to a dictionary in a Kratos compatible format."""

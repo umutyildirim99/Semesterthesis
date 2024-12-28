@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from dataclasses import dataclass
 
 from .constraint import KratosConstraint
@@ -10,6 +12,16 @@ class SimulationParameters:
 
     constraints: list[KratosConstraint]
     loads: list[KratosLoad]
+
+    @classmethod
+    def from_json(cls, json: dict) -> SimulationParameters:
+        """Construct this class from Kratos json content."""
+        return SimulationParameters(
+            constraints=[
+                KratosConstraint.from_json(c) for c in json["processes"]["constraints_process_list"]
+            ],
+            loads=[KratosLoad.from_json(load) for load in json["processes"]["loads_process_list"]],
+        )
 
     def to_json(self) -> dict:
         """Export this class to a dictionary in a Kratos compatible format."""
