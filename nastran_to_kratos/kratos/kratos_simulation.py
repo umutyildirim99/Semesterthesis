@@ -28,7 +28,11 @@ class KratosSimulation:
         return KratosSimulation(
             parameters=SimulationParameters.from_json(
                 _read_json(input_dir / "simulation_parameters.json")
-            )
+            ),
+            materials=[
+                KratosMaterial.from_json(m)
+                for m in _read_json(input_dir / "materials.json")["properties"]
+            ],
         )
 
     def write_to_directory(self, output_dir: Path) -> None:
