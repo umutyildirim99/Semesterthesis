@@ -203,5 +203,29 @@ def test_to_kratos__simulation_parameters():
     )
 
 
+def test_from_kratos__nodes():
+    kratos = KratosSimulation(
+        model=Model(
+            nodes={1: Node(0, 0, 0), 2: Node(1000, 0, 0)},
+        )
+    )
+
+    actual = TranslationLayer.from_kratos(kratos)
+    assert actual.nodes == [
+        Point(
+            id=1,
+            x=Length(meters=0),
+            y=Length(meters=0),
+            z=Length(meters=0),
+        ),
+        Point(
+            id=2,
+            x=Length(meters=1),
+            y=Length(meters=0),
+            z=Length(meters=0),
+        ),
+    ]
+
+
 if __name__ == "__main__":
     pytest.main([__file__, "-vv"])

@@ -32,6 +32,11 @@ class TranslationLayer:
             loads=loads_from_nastran(nastran.bulk_data),
         )
 
+    @classmethod
+    def from_kratos(cls, kratos: KratosSimulation) -> TranslationLayer:
+        """Construct this class from kratos."""
+        return TranslationLayer(nodes=_nodes_from_kratos(kratos))
+
     def to_kratos(self) -> KratosSimulation:
         """Export this simulation to kratos."""
         return KratosSimulation(
@@ -113,3 +118,9 @@ def _to_kratos_submodels_constraints(constraints: list[Constraint]) -> dict[str,
 
 def _to_kratos_submodels_loads(loads: list[Load]) -> dict[str, SubModel]:
     return {f"load_{i+1}": load.to_kratos_submodel(i + 1) for i, load in enumerate(loads)}
+
+
+def _nodes_from_kratos(kratos: KratosSimulation) -> list[Point]:
+    if kratos.model is None:
+        return []
+    return [Point.from_kratos(id_, node) for id_, node in kratos.model.nodes.items()]

@@ -40,6 +40,16 @@ class Point:
             z=Length(millimeters=grid.x3),
         )
 
+    @classmethod
+    def from_kratos(cls, id_: int, node: Node) -> Point:
+        """Construct this class from nastran."""
+        return Point(
+            id=id_,
+            x=Length(millimeters=node.x),
+            y=Length(millimeters=node.z),
+            z=Length(millimeters=node.y),
+        )
+
     def to_kratos(self) -> Node:
         """Export this Point as a kratos Node."""
         return Node(x=self.x.millimeters, y=self.y.millimeters, z=self.z.millimeters)
