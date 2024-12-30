@@ -2,6 +2,8 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 
+from quantio import Area
+
 from nastran_to_kratos.kratos.kratos_simulation import KratosSimulation, SimulationParameters
 from nastran_to_kratos.kratos.material import KratosMaterial
 from nastran_to_kratos.kratos.model import Condition, Element, Model, SubModel
@@ -10,6 +12,7 @@ from nastran_to_kratos.nastran import NastranSimulation
 from .connector import Connector, Truss, trusses_from_nastran
 from .constraint import Constraint, constraints_from_nastran
 from .load import Load, loads_from_nastran
+from .material import Material
 from .point import Point, nodes_from_nastran
 
 
@@ -35,7 +38,10 @@ class TranslationLayer:
     @classmethod
     def from_kratos(cls, kratos: KratosSimulation) -> TranslationLayer:
         """Construct this class from kratos."""
-        return TranslationLayer(nodes=_nodes_from_kratos(kratos))
+        return TranslationLayer(
+            nodes=_nodes_from_kratos(kratos),
+            connectors=_connectors_from_kratos(kratos),
+        )
 
     def to_kratos(self) -> KratosSimulation:
         """Export this simulation to kratos."""
@@ -124,3 +130,32 @@ def _nodes_from_kratos(kratos: KratosSimulation) -> list[Point]:
     if kratos.model is None:
         return []
     return [Point.from_kratos(id_, node) for id_, node in kratos.model.nodes.items()]
+
+
+def _connectors_from_kratos(kratos: KratosSimulation) -> list[Connector]:
+    if kratos.model is None or kratos.materials is None:
+        return []
+    if "TrussLinearElement3D2N" not in kratos.model.elements:
+        return []
+
+    connectors: list[Connector] = []
+    for truss_id, truss in kratos.model.elements["TrussLinearElement3D2N"].items():
+        truss_material = None
+        for material in kratos.materials:
+            if int(material.model_part_name.split("_")[-1]) == truss_id:
+                truss_material = material
+                break
+
+        if truss_material is None:
+            raise KeyError
+
+        connectors.append(
+            Truss(
+                first_point_index=truss.node_ids[0],
+                second_point_index=truss.node_ids[1],
+                cross_section=Area(square_millimeters=truss_material.variables["CROSS_AREA"]),
+                material=Material.from_kratos(truss_material),
+            )
+        )
+
+    return connectors

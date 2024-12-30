@@ -227,5 +227,36 @@ def test_from_kratos__nodes():
     ]
 
 
+def test_from_kratos__connectors():
+    kratos = KratosSimulation(
+        model=Model(
+            elements={"TrussLinearElement3D2N": {1: KratosElement(property_id=0, node_ids=[1, 2])}},
+        ),
+        materials=[
+            KratosMaterial(
+                model_part_name="Structure.truss_1",
+                properties_id=0,
+                material_name="Steel",
+                constitutive_law="TrussConstitutiveLaw",
+                variables={
+                    "YOUNG_MODULUS": 210_000,
+                    "CROSS_AREA": 35,
+                    "DENSITY": 0,
+                },
+            )
+        ],
+    )
+
+    actual = TranslationLayer.from_kratos(kratos)
+    assert actual.connectors == [
+        Truss(
+            first_point_index=1,
+            second_point_index=2,
+            cross_section=Area(square_millimeters=35),
+            material=Material(name="Steel", young_modulus=Pressure(gigapascal=210)),
+        )
+    ]
+
+
 if __name__ == "__main__":
     pytest.main([__file__, "-vv"])
