@@ -258,5 +258,45 @@ def test_from_kratos__connectors():
     ]
 
 
+def test_from_kratos__constraints():
+    kratos = KratosSimulation(
+        model=Model(
+            nodes={1: Node(0, 0, 0)},
+            sub_models={
+                "constraint_4": SubModel(nodes=[1]),
+                "constraint_6": SubModel(nodes=[1]),
+            },
+        ),
+        parameters=SimulationParameters(
+            constraints=[
+                KratosConstraint(
+                    model_part_name="Structure.constraint_4",
+                    constrained_per_axis=(True, True, True),
+                    value_per_axis=(0, 0, 0),
+                ),
+                KratosConstraint(
+                    model_part_name="Structure.constraint_6",
+                    constrained_per_axis=(False, True, True),
+                    value_per_axis=(None, 0, 0),
+                ),
+            ]
+        ),
+    )
+
+    actual = TranslationLayer.from_kratos(kratos)
+    assert actual.constraints == [
+        Constraint(
+            node_id=1,
+            translation_by_axis=(True, True, True),
+            rotation_by_axis=(False, False, False),
+        ),
+        Constraint(
+            node_id=1,
+            translation_by_axis=(False, True, True),
+            rotation_by_axis=(False, False, False),
+        ),
+    ]
+
+
 if __name__ == "__main__":
     pytest.main([__file__, "-vv"])

@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 
 from .constraint import KratosConstraint
 from .load import KratosLoad
@@ -10,8 +10,8 @@ from .load import KratosLoad
 class SimulationParameters:
     """Main container of information about the kratos simulation."""
 
-    constraints: list[KratosConstraint]
-    loads: list[KratosLoad]
+    constraints: list[KratosConstraint] = field(default_factory=list)
+    loads: list[KratosLoad] = field(default_factory=list)
 
     @classmethod
     def from_json(cls, json: dict) -> SimulationParameters:
