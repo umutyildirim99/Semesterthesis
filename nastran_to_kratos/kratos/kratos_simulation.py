@@ -33,6 +33,7 @@ class KratosSimulation:
                 KratosMaterial.from_json(m)
                 for m in _read_json(input_dir / "materials.json")["properties"]
             ],
+            model=Model.from_mdpa(_read_file(input_dir / "model.mdpa")),
         )
 
     def write_to_directory(self, output_dir: Path) -> None:
@@ -80,3 +81,8 @@ def _add_line_break_to_every_line(lines: list[str]) -> list[str]:
 def _read_json(path: Path) -> dict:
     with path.open() as file_:
         return json.load(file_)
+
+
+def _read_file(path: Path) -> list[str]:
+    with path.open() as file_:
+        return file_.readlines()

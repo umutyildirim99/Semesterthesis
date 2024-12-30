@@ -138,31 +138,6 @@ def test_from_directory__x_movable_rod__parameters(x_movable_rod_path):
     )
 
 
-def test_from_directory__x_movable_rod__parameters(x_movable_rod_path):
-    actual = KratosSimulation.from_directory(x_movable_rod_path)
-    assert actual.parameters == SimulationParameters(
-        constraints=[
-            KratosConstraint(
-                model_part_name="Structure.constraint_1",
-                constrained_per_axis=(True, True, True),
-                value_per_axis=(0.0, 0.0, 0.0),
-            ),
-            KratosConstraint(
-                model_part_name="Structure.constraint_2",
-                constrained_per_axis=(False, True, True),
-                value_per_axis=(None, 0.0, 0.0),
-            ),
-        ],
-        loads=[
-            KratosLoad(
-                model_part_name="Structure.load_1",
-                modulus=40_000.0,
-                direction=(1.0, 0.0, 0.0),
-            )
-        ],
-    )
-
-
 def test_from_directory__x_movable_rod__materials(x_movable_rod_path):
     actual = KratosSimulation.from_directory(x_movable_rod_path)
     assert actual.materials == [
@@ -174,6 +149,22 @@ def test_from_directory__x_movable_rod__materials(x_movable_rod_path):
             variables={"YOUNG_MODULUS": 210000.0, "DENSITY": 0, "CROSS_AREA": 350},
         )
     ]
+
+
+def test_from_directory__x_movable_rod__model(x_movable_rod_path):
+    actual = KratosSimulation.from_directory(x_movable_rod_path)
+    assert actual.model == Model(
+        properties={0: {}},
+        nodes={1: Node(0.0, 0.0, 0.0), 2: Node(1000.0, 0.0, 0.0)},
+        elements={"TrussLinearElement3D2N": {1: Element(0, [1, 2])}},
+        conditions={"PointLoadCondition2D1N": {1: Condition(0, [2])}},
+        sub_models={
+            "truss_1": SubModel(nodes=[1, 2], elements=[1]),
+            "constraint_1": SubModel(nodes=[1]),
+            "constraint_2": SubModel(nodes=[2]),
+            "load_1": SubModel(nodes=[2], conditions=[1]),
+        },
+    )
 
 
 if __name__ == "__main__":
