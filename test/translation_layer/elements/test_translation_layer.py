@@ -298,5 +298,22 @@ def test_from_kratos__constraints():
     ]
 
 
+def test_from_kratos__loads():
+    kratos = KratosSimulation(
+        model=Model(
+            nodes={1: Node(0, 0, 0)},
+            sub_models={
+                "load_1": SubModel(nodes=[1]),
+            },
+        ),
+        parameters=SimulationParameters(
+            loads=[KratosLoad(model_part_name="Structure.load_1", modulus=100, direction=(1, 0, 0))]
+        ),
+    )
+
+    actual = TranslationLayer.from_kratos(kratos)
+    assert actual.loads == [Load(node_id=1, modulus=100, direction=(1, 0, 0))]
+
+
 if __name__ == "__main__":
     pytest.main([__file__, "-vv"])

@@ -42,6 +42,7 @@ class TranslationLayer:
             nodes=_nodes_from_kratos(kratos),
             connectors=_connectors_from_kratos(kratos),
             constraints=_constraints_from_kratos(kratos),
+            loads=_loads_from_kratos(kratos),
         )
 
     def to_kratos(self) -> KratosSimulation:
@@ -180,3 +181,23 @@ def _constraints_from_kratos(kratos: KratosSimulation) -> list[Constraint]:
         )
 
     return constraints
+
+
+def _loads_from_kratos(kratos: KratosSimulation) -> list[Load]:
+    if kratos.parameters is None or kratos.model is None:
+        return []
+
+    loads = []
+    for load in kratos.parameters.loads:
+        load_id = load.model_part_name.split(".")[-1]
+        node_id = kratos.model.sub_models[load_id].nodes[0]
+
+        loads.append(
+            Load(
+                node_id,
+                modulus=load.modulus,
+                direction=load.direction,
+            )
+        )
+
+    return loads
