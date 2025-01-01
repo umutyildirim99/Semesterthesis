@@ -317,10 +317,6 @@ def test_from_kratos__loads():
 
 def test_to_nastran__crods():
     translation = TranslationLayer(
-        nodes=[
-            Point(1, x=Length(meters=0), y=Length(meters=0), z=Length(meters=0)),
-            Point(2, x=Length(meters=1), y=Length(meters=0), z=Length(meters=0)),
-        ],
         connectors=[
             Truss(
                 first_point_index=1,
@@ -333,6 +329,13 @@ def test_to_nastran__crods():
 
     actual = translation.to_nastran()
     assert actual.bulk_data.crods == [Crod(eid=1, pid=1, g1=1, g2=2)]
+
+
+def test_to_nastran__crods():
+    translation = TranslationLayer(loads=[Load(node_id=5, modulus=40_000, direction=(1, 0, 0))])
+
+    actual = translation.to_nastran()
+    assert actual.bulk_data.forces == [Force(sid=1, g=5, cid=0, f=40_000, n1=1, n2=0, n3=0)]
 
 
 if __name__ == "__main__":

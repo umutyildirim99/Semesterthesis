@@ -6,7 +6,7 @@ from nastran_to_kratos.kratos.kratos_simulation import KratosSimulation, Simulat
 from nastran_to_kratos.kratos.material import KratosMaterial
 from nastran_to_kratos.kratos.model import Condition, Element, Model, SubModel
 from nastran_to_kratos.nastran import BulkDataSection, NastranSimulation
-from nastran_to_kratos.nastran.bulk_data.entries import Crod, _BulkDataEntry
+from nastran_to_kratos.nastran.bulk_data.entries import Crod, Force, _BulkDataEntry
 
 from .connector import Connector, Truss, trusses_from_kratos, trusses_from_nastran
 from .constraint import Constraint, constraints_from_kratos, constraints_from_nastran
@@ -54,7 +54,9 @@ class TranslationLayer:
     def to_nastran(self) -> NastranSimulation:
         """Export this simulation to nastran."""
         return NastranSimulation(
-            bulk_data=BulkDataSection(entries=_to_nastran_crods(self.connectors))
+            bulk_data=BulkDataSection(
+                entries=_to_nastran_crods(self.connectors) + _to_nastran_forces(self.loads)
+            )
         )
 
 
@@ -142,3 +144,21 @@ def _to_nastran_crods(connectors: list[Connector]) -> list[_BulkDataEntry]:
         )
 
     return crods
+
+
+def _to_nastran_forces(loads: list[Load]) -> list[_BulkDataEntry]:
+    forces: list[_BulkDataEntry] = []
+    for i, load in enumerate(loads):
+        forces.append(
+            Force(
+                sid=i + 1,
+                g=load.node_id,
+                cid=0,
+                f=load.modulus,
+                n1=load.direction[0],
+                n2=load.direction[1],
+                n3=load.direction[2],
+            )
+        )
+
+    return forces
