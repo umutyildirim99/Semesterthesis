@@ -5,7 +5,8 @@ from dataclasses import dataclass, field
 from nastran_to_kratos.kratos.kratos_simulation import KratosSimulation, SimulationParameters
 from nastran_to_kratos.kratos.material import KratosMaterial
 from nastran_to_kratos.kratos.model import Condition, Element, Model, SubModel
-from nastran_to_kratos.nastran import NastranSimulation
+from nastran_to_kratos.nastran import BulkDataSection, NastranSimulation
+from nastran_to_kratos.nastran.bulk_data.entries import Crod, _BulkDataEntry
 
 from .connector import Connector, Truss, trusses_from_kratos, trusses_from_nastran
 from .constraint import Constraint, constraints_from_kratos, constraints_from_nastran
@@ -48,6 +49,12 @@ class TranslationLayer:
             model=_to_kratos_model(self),
             materials=_to_kratos_materials(self.connectors),
             parameters=_to_kratos_parameters(self),
+        )
+
+    def to_nastran(self) -> NastranSimulation:
+        """Export this simulation to nastran."""
+        return NastranSimulation(
+            bulk_data=BulkDataSection(entries=_to_nastran_crods(self.connectors))
         )
 
 
@@ -123,3 +130,15 @@ def _to_kratos_submodels_constraints(constraints: list[Constraint]) -> dict[str,
 
 def _to_kratos_submodels_loads(loads: list[Load]) -> dict[str, SubModel]:
     return {f"load_{i+1}": load.to_kratos_submodel(i + 1) for i, load in enumerate(loads)}
+
+
+def _to_nastran_crods(connectors: list[Connector]) -> list[_BulkDataEntry]:
+    crods: list[_BulkDataEntry] = []
+    for i, connector in enumerate(connectors):
+        crods.append(
+            Crod(
+                eid=i + 1, pid=i + 1, g1=connector.first_point_index, g2=connector.second_point_index
+            )
+        )
+
+    return crods

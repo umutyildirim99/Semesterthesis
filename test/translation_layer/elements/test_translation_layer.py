@@ -315,5 +315,25 @@ def test_from_kratos__loads():
     assert actual.loads == [Load(node_id=1, modulus=100, direction=(1, 0, 0))]
 
 
+def test_to_nastran__crods():
+    translation = TranslationLayer(
+        nodes=[
+            Point(1, x=Length(meters=0), y=Length(meters=0), z=Length(meters=0)),
+            Point(2, x=Length(meters=1), y=Length(meters=0), z=Length(meters=0)),
+        ],
+        connectors=[
+            Truss(
+                first_point_index=1,
+                second_point_index=2,
+                material=Material(),
+                cross_section=Area.zero(),
+            )
+        ],
+    )
+
+    actual = translation.to_nastran()
+    assert actual.bulk_data.crods == [Crod(eid=1, pid=1, g1=1, g2=2)]
+
+
 if __name__ == "__main__":
     pytest.main([__file__, "-vv"])
