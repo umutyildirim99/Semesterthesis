@@ -27,8 +27,8 @@ def x_movable_rod() -> NastranSimulation:
             ),
             subcases={
                 1: Subcase(
-                    subtitle="LS_xForce",
-                    label="LS_xForce",
+                    subtitle="case_1",
+                    label="case_1",
                     spc=2,
                     load=1,
                     analysis=Analysis.STATICS,

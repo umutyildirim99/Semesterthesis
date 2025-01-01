@@ -20,13 +20,13 @@ $$------------------------------------------------------------------------------
   STRESS = ALL
 
 $
-$HMNAME LOADSTEP               1"LS_xForce"
+$HMNAME LOADSTEP               1"case_1"
 SUBCASE       1
   ANALYSIS = STATICS
-  LABEL = LS_xForce
+  LABEL = case_1
   LOAD =        1
   SPC =        2
-  SUBTITLE = LS_xForce
+  SUBTITLE = case_1
 $$------------------------------------------------------------------------------$
 $$                      Bulk Data Cards                                         $
 $$------------------------------------------------------------------------------$
