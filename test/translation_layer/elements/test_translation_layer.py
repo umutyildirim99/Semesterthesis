@@ -338,5 +338,17 @@ def test_to_nastran__crods():
     assert actual.bulk_data.forces == [Force(sid=1, g=5, cid=0, f=40_000, n1=1, n2=0, n3=0)]
 
 
+def test_to_nastran__grids():
+    translation = TranslationLayer(
+        nodes=[Point.origin(1), Point(id=1, x=Length(meters=1), y=Length.zero(), z=Length.zero())]
+    )
+
+    actual = translation.to_nastran()
+    assert actual.bulk_data.grids == [
+        Grid(id=1, cp=None, x1=0, x2=0, x3=0),
+        Grid(id=1, cp=None, x1=1000, x2=0, x3=0),
+    ]
+
+
 if __name__ == "__main__":
     pytest.main([__file__, "-vv"])
