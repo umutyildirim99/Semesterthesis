@@ -5,6 +5,7 @@ from dataclasses import dataclass
 
 from quantio import Area
 
+from nastran_to_kratos.kratos import KratosSimulation
 from nastran_to_kratos.kratos.material import KratosMaterial
 from nastran_to_kratos.kratos.model import Element, SubModel
 from nastran_to_kratos.nastran.bulk_data import BulkDataSection
@@ -71,10 +72,40 @@ class Truss(Connector):
 
 
 def trusses_from_nastran(bulk_data: BulkDataSection) -> list[Connector]:
-    """Construct all materials from the nastran Crods and Prods."""
+    """Construct all trusses from the nastran Crods."""
     prods_by_pid = {prod.pid: prod for prod in bulk_data.prods}
     mat1s_by_mid = {mat1.mid: mat1 for mat1 in bulk_data.mat1s}
     return [
         Truss.from_nastran(crod, prods_by_pid[crod.pid], mat1s_by_mid[prods_by_pid[crod.pid].mid])
         for crod in bulk_data.crods
     ]
+
+
+def trusses_from_kratos(kratos: KratosSimulation) -> list[Connector]:
+    """Construct all trusses from a kratos simulation."""
+    if kratos.model is None or kratos.materials is None:
+        return []
+    if "TrussLinearElement3D2N" not in kratos.model.elements:
+        return []
+
+    connectors: list[Connector] = []
+    for truss_id, truss in kratos.model.elements["TrussLinearElement3D2N"].items():
+        truss_material = None
+        for material in kratos.materials:
+            if int(material.model_part_name.split("_")[-1]) == truss_id:
+                truss_material = material
+                break
+
+        if truss_material is None:
+            raise KeyError
+
+        connectors.append(
+            Truss(
+                first_point_index=truss.node_ids[0],
+                second_point_index=truss.node_ids[1],
+                cross_section=Area(square_millimeters=truss_material.variables["CROSS_AREA"]),
+                material=Material.from_kratos(truss_material),
+            )
+        )
+
+    return connectors

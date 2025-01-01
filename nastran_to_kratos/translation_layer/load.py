@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 
+from nastran_to_kratos.kratos import KratosSimulation
 from nastran_to_kratos.kratos.model import Condition, SubModel
 from nastran_to_kratos.kratos.simulation_parameters import KratosLoad
 from nastran_to_kratos.nastran.bulk_data import BulkDataSection
@@ -45,3 +46,24 @@ class Load:
 def loads_from_nastran(bulk_data: BulkDataSection) -> list[Load]:
     """Construct all loads from nastran."""
     return [Load.from_nastran(force) for force in bulk_data.forces]
+
+
+def loads_from_kratos(kratos: KratosSimulation) -> list[Load]:
+    """Construct all loads from kratos."""
+    if kratos.parameters is None or kratos.model is None:
+        return []
+
+    loads = []
+    for load in kratos.parameters.loads:
+        load_id = load.model_part_name.split(".")[-1]
+        node_id = kratos.model.sub_models[load_id].nodes[0]
+
+        loads.append(
+            Load(
+                node_id,
+                modulus=load.modulus,
+                direction=load.direction,
+            )
+        )
+
+    return loads

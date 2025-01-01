@@ -4,6 +4,7 @@ from dataclasses import dataclass
 
 from quantio import Length
 
+from nastran_to_kratos.kratos import KratosSimulation
 from nastran_to_kratos.kratos.model import Node
 from nastran_to_kratos.nastran.bulk_data import BulkDataSection
 from nastran_to_kratos.nastran.bulk_data.entries import Grid
@@ -58,6 +59,13 @@ class Point:
 def nodes_from_nastran(bulk_data: BulkDataSection) -> list[Point]:
     """Construct all nodes from the nastran grid."""
     return [Point.from_nastran(grid) for grid in _sort_by_grid_id(bulk_data.grids)]
+
+
+def nodes_from_kratos(kratos: KratosSimulation) -> list[Point]:
+    """Construct all nodes from a kratos simulation."""
+    if kratos.model is None:
+        return []
+    return [Point.from_kratos(id_, node) for id_, node in kratos.model.nodes.items()]
 
 
 def _sort_by_grid_id(grids: list[Grid]) -> list[Grid]:
