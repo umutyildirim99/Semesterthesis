@@ -350,5 +350,21 @@ def test_to_nastran__grids():
     ]
 
 
+def test_to_nastran__mat1s():
+    translation = TranslationLayer(
+        connectors=[
+            Truss(
+                first_point_index=0,
+                second_point_index=0,
+                material=Material(name="Steel", young_modulus=Pressure(gigapascal=210)),
+                cross_section=Area.zero(),
+            )
+        ]
+    )
+
+    actual = translation.to_nastran()
+    assert actual.bulk_data.mat1s == [Mat1(mid=1, e=210_000)]
+
+
 if __name__ == "__main__":
     pytest.main([__file__, "-vv"])

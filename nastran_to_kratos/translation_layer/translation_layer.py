@@ -6,7 +6,7 @@ from nastran_to_kratos.kratos.kratos_simulation import KratosSimulation, Simulat
 from nastran_to_kratos.kratos.material import KratosMaterial
 from nastran_to_kratos.kratos.model import Condition, Element, Model, SubModel
 from nastran_to_kratos.nastran import BulkDataSection, NastranSimulation
-from nastran_to_kratos.nastran.bulk_data.entries import Crod, Force, Grid, _BulkDataEntry
+from nastran_to_kratos.nastran.bulk_data.entries import Crod, Force, Grid, Mat1, _BulkDataEntry
 
 from .connector import Connector, Truss, trusses_from_kratos, trusses_from_nastran
 from .constraint import Constraint, constraints_from_kratos, constraints_from_nastran
@@ -58,6 +58,7 @@ class TranslationLayer:
                 entries=_to_nastran_crods(self.connectors)
                 + _to_nastran_forces(self.loads)
                 + _to_nastran_grids(self.nodes)
+                + _to_nastran_mat1s(self.connectors)
             )
         )
 
@@ -177,3 +178,18 @@ def _to_nastran_grids(nodes: list[Point]) -> list[_BulkDataEntry]:
         )
         for node in nodes
     ]
+
+
+def _to_nastran_mat1s(connectors: list[Connector]) -> list[_BulkDataEntry]:
+    mat1s: list[_BulkDataEntry] = []
+    for i, connector in enumerate(connectors):
+        mat1s.append(
+            Mat1(
+                mid=i + 1,
+                e=connector.material.young_modulus.megapascal
+                if connector.material.young_modulus is not None
+                else None,
+            )
+        )
+
+    return mat1s

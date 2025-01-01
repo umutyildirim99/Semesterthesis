@@ -94,7 +94,7 @@ $$  MAT1 Data
 $
 $HMNAME MAT                    1"Steel" "MAT1"
 $HWCOLOR MAT                   1      43
-MAT1           1  210000     0.3
+MAT1           1  210000
 $$
 $$------------------------------------------------------------------------------$
 $$        Loads and Boundary Conditions                                         $
