@@ -15,6 +15,14 @@ from nastran_to_kratos.kratos.simulation_parameters import (
 from nastran_to_kratos.nastran import NastranSimulation
 from nastran_to_kratos.nastran.bulk_data import BulkDataSection
 from nastran_to_kratos.nastran.bulk_data.entries import Spc, Mat1, Grid, Crod, Prod, Force, Prod
+from nastran_to_kratos.nastran.case_control import (
+    Analysis,
+    CaseControlSection,
+    Displacement,
+    Strain,
+    Stress,
+    Subcase,
+)
 from nastran_to_kratos.translation_layer import (
     TranslationLayer,
     Constraint,
@@ -395,6 +403,29 @@ def test_to_nastran__spcs():
 
     actual = translation.to_nastran()
     assert actual.bulk_data.spcs == [Spc(sid=2, g1=5, c1=135, d1=0.0)]
+
+
+def test_to_nastran__case_control():
+    translation = TranslationLayer(loads=[Load(node_id=5, modulus=0, direction=(0, 0, 0))])
+
+    actual = translation.to_nastran()
+    assert actual.case_control == CaseControlSection(
+        general=Subcase(
+            analysis=Analysis.STATICS,
+            displacement=Displacement.ALL,
+            strain=Strain.ALL,
+            stress=Stress.ALL,
+        ),
+        subcases={
+            1: Subcase(
+                analysis=Analysis.STATICS,
+                label="case_1",
+                load=1,
+                spc=2,
+                subtitle="case_1",
+            )
+        },
+    )
 
 
 if __name__ == "__main__":

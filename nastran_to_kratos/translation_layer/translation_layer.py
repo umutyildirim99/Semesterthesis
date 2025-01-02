@@ -15,6 +15,14 @@ from nastran_to_kratos.nastran.bulk_data.entries import (
     Spc,
     _BulkDataEntry,
 )
+from nastran_to_kratos.nastran.case_control import (
+    Analysis,
+    CaseControlSection,
+    Displacement,
+    Strain,
+    Stress,
+    Subcase,
+)
 
 from .connector import Connector, Truss, trusses_from_kratos, trusses_from_nastran
 from .constraint import Constraint, constraints_from_kratos, constraints_from_nastran
@@ -62,6 +70,7 @@ class TranslationLayer:
     def to_nastran(self) -> NastranSimulation:
         """Export this simulation to nastran."""
         return NastranSimulation(
+            case_control=_to_nastran_case_control(self.loads),
             bulk_data=BulkDataSection(
                 entries=_to_nastran_crods(self.connectors)
                 + _to_nastran_forces(self.loads)
@@ -69,7 +78,7 @@ class TranslationLayer:
                 + _to_nastran_mat1s(self.connectors)
                 + _to_nastran_prods(self.connectors)
                 + _to_nastran_spcs(self.constraints)
-            )
+            ),
         )
 
 
@@ -236,3 +245,25 @@ def _to_nastran_spcs(constraints: list[Constraint]) -> list[_BulkDataEntry]:
         spcs.append(Spc(sid=2, g1=constraint.node_id, c1=int(c1), d1=0.0))
 
     return spcs
+
+
+def _to_nastran_case_control(loads: list[Load]) -> CaseControlSection:
+    subcases = {}
+    for i, _ in enumerate(loads):
+        subcases[i + 1] = Subcase(
+            analysis=Analysis.STATICS,
+            label=f"case_{i+1}",
+            load=i + 1,
+            spc=2,  # hard coded for now because I don't quite understand this value
+            subtitle=f"case_{i+1}",
+        )
+
+    return CaseControlSection(
+        general=Subcase(
+            analysis=Analysis.STATICS,
+            displacement=Displacement.ALL,
+            strain=Strain.ALL,
+            stress=Stress.ALL,
+        ),
+        subcases=subcases,
+    )
