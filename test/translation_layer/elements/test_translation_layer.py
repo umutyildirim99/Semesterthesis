@@ -14,7 +14,7 @@ from nastran_to_kratos.kratos.simulation_parameters import (
 )
 from nastran_to_kratos.nastran import NastranSimulation
 from nastran_to_kratos.nastran.bulk_data import BulkDataSection
-from nastran_to_kratos.nastran.bulk_data.entries import Spc, Mat1, Grid, Crod, Prod, Force
+from nastran_to_kratos.nastran.bulk_data.entries import Spc, Mat1, Grid, Crod, Prod, Force, Prod
 from nastran_to_kratos.translation_layer import (
     TranslationLayer,
     Constraint,
@@ -331,7 +331,7 @@ def test_to_nastran__crods():
     assert actual.bulk_data.crods == [Crod(eid=1, pid=1, g1=1, g2=2)]
 
 
-def test_to_nastran__crods():
+def test_to_nastran__forces():
     translation = TranslationLayer(loads=[Load(node_id=5, modulus=40_000, direction=(1, 0, 0))])
 
     actual = translation.to_nastran()
@@ -364,6 +364,22 @@ def test_to_nastran__mat1s():
 
     actual = translation.to_nastran()
     assert actual.bulk_data.mat1s == [Mat1(mid=1, e=210_000)]
+
+
+def test_to_nastran__prods():
+    translation = TranslationLayer(
+        connectors=[
+            Truss(
+                first_point_index=0,
+                second_point_index=0,
+                material=Material(),
+                cross_section=Area(square_millimeters=50),
+            )
+        ],
+    )
+
+    actual = translation.to_nastran()
+    assert actual.bulk_data.prods == [Prod(pid=1, mid=1, a=50)]
 
 
 if __name__ == "__main__":
