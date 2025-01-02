@@ -6,7 +6,15 @@ from nastran_to_kratos.kratos.kratos_simulation import KratosSimulation, Simulat
 from nastran_to_kratos.kratos.material import KratosMaterial
 from nastran_to_kratos.kratos.model import Condition, Element, Model, SubModel
 from nastran_to_kratos.nastran import BulkDataSection, NastranSimulation
-from nastran_to_kratos.nastran.bulk_data.entries import Crod, Force, Grid, Mat1, Prod, _BulkDataEntry
+from nastran_to_kratos.nastran.bulk_data.entries import (
+    Crod,
+    Force,
+    Grid,
+    Mat1,
+    Prod,
+    Spc,
+    _BulkDataEntry,
+)
 
 from .connector import Connector, Truss, trusses_from_kratos, trusses_from_nastran
 from .constraint import Constraint, constraints_from_kratos, constraints_from_nastran
@@ -60,6 +68,7 @@ class TranslationLayer:
                 + _to_nastran_grids(self.nodes)
                 + _to_nastran_mat1s(self.connectors)
                 + _to_nastran_prods(self.connectors)
+                + _to_nastran_spcs(self.constraints)
             )
         )
 
@@ -204,3 +213,26 @@ def _to_nastran_prods(connectors: list[Connector]) -> list[_BulkDataEntry]:
         prods.append(Prod(pid=i + 1, mid=i + 1, a=connector.cross_section.square_millimeters))
 
     return prods
+
+
+def _to_nastran_spcs(constraints: list[Constraint]) -> list[_BulkDataEntry]:
+    spcs: list[_BulkDataEntry] = []
+    for i, constraint in enumerate(constraints):
+        c1 = ""
+
+        if constraint.translation_by_axis[0]:
+            c1 += "1"
+        if constraint.translation_by_axis[1]:
+            c1 += "2"
+        if constraint.translation_by_axis[2]:
+            c1 += "3"
+        if constraint.rotation_by_axis[0]:
+            c1 += "4"
+        if constraint.rotation_by_axis[1]:
+            c1 += "5"
+        if constraint.rotation_by_axis[2]:
+            c1 += "6"
+
+        spcs.append(Spc(sid=i + 1, g1=constraint.node_id, c1=int(c1), d1=0.0))
+
+    return spcs
