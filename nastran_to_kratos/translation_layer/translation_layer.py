@@ -217,7 +217,7 @@ def _to_nastran_prods(connectors: list[Connector]) -> list[_BulkDataEntry]:
 
 def _to_nastran_spcs(constraints: list[Constraint]) -> list[_BulkDataEntry]:
     spcs: list[_BulkDataEntry] = []
-    for i, constraint in enumerate(constraints):
+    for constraint in constraints:
         c1 = ""
 
         if constraint.translation_by_axis[0]:
@@ -233,6 +233,6 @@ def _to_nastran_spcs(constraints: list[Constraint]) -> list[_BulkDataEntry]:
         if constraint.rotation_by_axis[2]:
             c1 += "6"
 
-        spcs.append(Spc(sid=i + 1, g1=constraint.node_id, c1=int(c1), d1=0.0))
+        spcs.append(Spc(sid=2, g1=constraint.node_id, c1=int(c1), d1=0.0))
 
     return spcs

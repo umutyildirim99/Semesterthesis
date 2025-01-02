@@ -394,7 +394,7 @@ def test_to_nastran__spcs():
     )
 
     actual = translation.to_nastran()
-    assert actual.bulk_data.spcs == [Spc(sid=1, g1=5, c1=135, d1=0.0)]
+    assert actual.bulk_data.spcs == [Spc(sid=2, g1=5, c1=135, d1=0.0)]
 
 
 if __name__ == "__main__":
