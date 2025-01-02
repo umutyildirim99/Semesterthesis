@@ -14,7 +14,7 @@ from nastran_to_kratos.kratos.simulation_parameters import (
 )
 from nastran_to_kratos.nastran import NastranSimulation
 from nastran_to_kratos.nastran.bulk_data import BulkDataSection
-from nastran_to_kratos.nastran.bulk_data.entries import Spc, Mat1, Grid, Crod, Prod, Force, Prod, Spc
+from nastran_to_kratos.nastran.bulk_data.entries import Spc, Mat1, Grid, Crod, Prod, Force, Prod
 from nastran_to_kratos.translation_layer import (
     TranslationLayer,
     Constraint,
