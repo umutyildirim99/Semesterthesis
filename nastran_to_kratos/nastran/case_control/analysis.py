@@ -1,7 +1,7 @@
-from enum import Enum, auto
+from ._case_control_enum import _CaseControlEnum
 
 
-class Analysis(Enum):
+class Analysis(_CaseControlEnum):
     """Specifies the type of analysis being performed for the current SUBCASE/STEP/SUBSTEP."""
 
-    STATICS = auto()
+    STATICS = "STATICS"

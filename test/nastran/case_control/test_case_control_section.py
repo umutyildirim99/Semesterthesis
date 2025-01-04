@@ -93,5 +93,61 @@ def test_from_file_content__general_and_subcase():
     )
 
 
+def test_to_file_content__only_general():
+    section = CaseControlSection(
+        general=Subcase.from_file_content(
+            [
+                "  ANALYSIS = STATICS",
+                "  DISPLACEMENT = ALL",
+                "  STRAIN = ALL",
+                "  STRESS = ALL",
+            ]
+        ),
+        subcases={},
+    )
+
+    actual = section.to_file_content()
+    assert actual == [
+        "  ANALYSIS = STATICS",
+        "  DISPLACEMENT = ALL",
+        "  STRAIN = ALL",
+        "  STRESS = ALL",
+    ]
+
+
+def test_from_file_content__subcases():
+    section = CaseControlSection(
+        general=Subcase.empty(),
+        subcases={
+            1: Subcase.from_file_content(
+                [
+                    "  SUBTITLE = LS_xForce",
+                    "  LABEL = LS_xForce",
+                    "  SPC =        2",
+                    "  LOAD =        1",
+                ]
+            ),
+            2: Subcase.from_file_content(
+                [
+                    "  SUBTITLE  = LS_yForce",
+                    "  LABEL= LS_yForce",
+                ]
+            ),
+        },
+    )
+
+    actual = section.to_file_content()
+    assert actual == [
+        "SUBCASE       1",
+        "  LABEL = LS_xForce",
+        "  LOAD =        1",
+        "  SPC =        2",
+        "  SUBTITLE = LS_xForce",
+        "SUBCASE       2",
+        "  LABEL = LS_yForce",
+        "  SUBTITLE = LS_yForce",
+    ]
+
+
 if __name__ == "__main__":
     pytest.main([__file__, "-v"])

@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from dataclasses import dataclass
 
 
@@ -19,6 +21,17 @@ class KratosMaterial:
 
     variables: dict[str, float]
     "Container of the material properties, like YOUNG_MODULUS or DENSITY."
+
+    @classmethod
+    def from_json(cls, json: dict) -> KratosMaterial:
+        """Construct this class from Kratos json content."""
+        return KratosMaterial(
+            model_part_name=json["model_part_name"],
+            properties_id=json["properties_id"],
+            material_name=json["Material"]["name"],
+            constitutive_law=json["Material"]["constitutive_law"]["name"],
+            variables=json["Material"]["Variables"],
+        )
 
     def to_json(self) -> dict:
         """Export this material to a dictionary in a Kratos compatible format."""

@@ -4,6 +4,7 @@ from dataclasses import dataclass
 
 from quantio import Pressure
 
+from nastran_to_kratos.kratos.material import KratosMaterial
 from nastran_to_kratos.nastran.bulk_data import BulkDataSection
 from nastran_to_kratos.nastran.bulk_data.entries import Mat1
 
@@ -21,6 +22,14 @@ class Material:
         return Material(
             name=f"MAT1_{mat1.mid}",
             young_modulus=Pressure(megapascal=mat1.e) if mat1.e is not None else None,
+        )
+
+    @classmethod
+    def from_kratos(cls, kratos: KratosMaterial) -> Material:
+        """Construct this class from kratos."""
+        return Material(
+            name=kratos.material_name,
+            young_modulus=Pressure(megapascal=kratos.variables["YOUNG_MODULUS"]),
         )
 
 

@@ -57,6 +57,31 @@ class Subcase:
 
         return subcase
 
+    def to_file_content(self) -> list[str]:
+        """Export this subcase into lines for saving to a nastran file."""
+        lines = []
+        if self.analysis is not None:
+            lines.append(f"  ANALYSIS = {self.analysis}")
+        if self.displacement is not None:
+            lines.append(f"  DISPLACEMENT = {self.displacement}")
+        if self.label is not None:
+            lines.append(f"  LABEL = {self.label}")
+        if self.load is not None:
+            lines.append(f"  LOAD = {_leftpad8(self.load)}")
+        if self.spc is not None:
+            lines.append(f"  SPC = {_leftpad8(self.spc)}")
+        if self.strain is not None:
+            lines.append(f"  STRAIN = {self.strain}")
+        if self.stress is not None:
+            lines.append(f"  STRESS = {self.stress}")
+        if self.subtitle is not None:
+            lines.append(f"  SUBTITLE = {self.subtitle}")
+        return lines
+
+
+def _leftpad8(s: str | int) -> str:
+    return str(s).rjust(8, " ")
+
 
 class UnsupportedSubcaseFieldError(Exception):
     """Raised when a subcase field is not (yet) supported."""

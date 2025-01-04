@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 
+from nastran_to_kratos.kratos import KratosSimulation
 from nastran_to_kratos.kratos.model import SubModel
 from nastran_to_kratos.kratos.simulation_parameters import KratosConstraint
 from nastran_to_kratos.nastran.bulk_data import BulkDataSection
@@ -53,3 +54,24 @@ class Constraint:
 def constraints_from_nastran(bulk_data: BulkDataSection) -> list[Constraint]:
     """Construct all constraints from nastran."""
     return [Constraint.from_nastran(spc) for spc in bulk_data.spcs]
+
+
+def constraints_from_kratos(kratos: KratosSimulation) -> list[Constraint]:
+    """Construct all constraints from kratos."""
+    if kratos.parameters is None or kratos.model is None:
+        return []
+
+    constraints = []
+    for constraint in kratos.parameters.constraints:
+        constraint_id = constraint.model_part_name.split(".")[-1]
+        node_id = kratos.model.sub_models[constraint_id].nodes[0]
+
+        constraints.append(
+            Constraint(
+                node_id,
+                translation_by_axis=constraint.constrained_per_axis,
+                rotation_by_axis=(False, False, False),
+            )
+        )
+
+    return constraints

@@ -27,7 +27,7 @@ class Mat1(_BulkDataEntry):
     a: float | None = None
     "Thermal expansion coefficient."
 
-    tref: float = 0.0
+    tref: float | None = None
     """Reference temperature for the calculation of thermal loads, or a
     temperature-dependent thermal expansion coefficient."""
 
@@ -56,12 +56,31 @@ class Mat1(_BulkDataEntry):
             nu=cls._read_optional_field(file_content, 4, float, None),
             rho=cls._read_optional_field(file_content, 5, float, None),
             a=cls._read_optional_field(file_content, 6, float, None),
-            tref=cls._read_optional_field(file_content, 7, float, 0.0),
+            tref=cls._read_optional_field(file_content, 7, float, None),
             ge=cls._read_optional_field(file_content, 8, float, None),
             st=cls._read_optional_field(file_content, 9, float, None),
             sc=cls._read_optional_field(file_content, 10, float, None),
             ss=cls._read_optional_field(file_content, 11, float, None),
             mcsid=cls._read_optional_field(file_content, 12, int, None),
+        )
+
+    def to_file_content(self) -> str:
+        """Export this Mat1 into a line for saving to a nastran file."""
+        return "MAT1    " + self._fields_to_line(
+            [
+                self.mid,
+                self.e,
+                self.g,
+                self.nu,
+                self.rho,
+                self.a,
+                self.tref,
+                self.ge,
+                self.st,
+                self.sc,
+                self.ss,
+                self.mcsid,
+            ]
         )
 
     def __hash__(self) -> int:

@@ -14,7 +14,15 @@ from nastran_to_kratos.kratos.simulation_parameters import (
 )
 from nastran_to_kratos.nastran import NastranSimulation
 from nastran_to_kratos.nastran.bulk_data import BulkDataSection
-from nastran_to_kratos.nastran.bulk_data.entries import Spc, Mat1, Grid, Crod, Prod, Force
+from nastran_to_kratos.nastran.bulk_data.entries import Spc, Mat1, Grid, Crod, Prod, Force, Prod
+from nastran_to_kratos.nastran.case_control import (
+    Analysis,
+    CaseControlSection,
+    Displacement,
+    Strain,
+    Stress,
+    Subcase,
+)
 from nastran_to_kratos.translation_layer import (
     TranslationLayer,
     Constraint,
@@ -200,6 +208,223 @@ def test_to_kratos__simulation_parameters():
             )
         ],
         loads=[KratosLoad(model_part_name="Structure.load_1", modulus=40_000, direction=(1, 0, 0))],
+    )
+
+
+def test_from_kratos__nodes():
+    kratos = KratosSimulation(
+        model=Model(
+            nodes={1: Node(0, 0, 0), 2: Node(1000, 0, 0)},
+        )
+    )
+
+    actual = TranslationLayer.from_kratos(kratos)
+    assert actual.nodes == [
+        Point(
+            id=1,
+            x=Length(meters=0),
+            y=Length(meters=0),
+            z=Length(meters=0),
+        ),
+        Point(
+            id=2,
+            x=Length(meters=1),
+            y=Length(meters=0),
+            z=Length(meters=0),
+        ),
+    ]
+
+
+def test_from_kratos__connectors():
+    kratos = KratosSimulation(
+        model=Model(
+            elements={"TrussLinearElement3D2N": {1: KratosElement(property_id=0, node_ids=[1, 2])}},
+        ),
+        materials=[
+            KratosMaterial(
+                model_part_name="Structure.truss_1",
+                properties_id=0,
+                material_name="Steel",
+                constitutive_law="TrussConstitutiveLaw",
+                variables={
+                    "YOUNG_MODULUS": 210_000,
+                    "CROSS_AREA": 35,
+                    "DENSITY": 0,
+                },
+            )
+        ],
+    )
+
+    actual = TranslationLayer.from_kratos(kratos)
+    assert actual.connectors == [
+        Truss(
+            first_point_index=1,
+            second_point_index=2,
+            cross_section=Area(square_millimeters=35),
+            material=Material(name="Steel", young_modulus=Pressure(gigapascal=210)),
+        )
+    ]
+
+
+def test_from_kratos__constraints():
+    kratos = KratosSimulation(
+        model=Model(
+            nodes={1: Node(0, 0, 0)},
+            sub_models={
+                "constraint_4": SubModel(nodes=[1]),
+                "constraint_6": SubModel(nodes=[1]),
+            },
+        ),
+        parameters=SimulationParameters(
+            constraints=[
+                KratosConstraint(
+                    model_part_name="Structure.constraint_4",
+                    constrained_per_axis=(True, True, True),
+                    value_per_axis=(0, 0, 0),
+                ),
+                KratosConstraint(
+                    model_part_name="Structure.constraint_6",
+                    constrained_per_axis=(False, True, True),
+                    value_per_axis=(None, 0, 0),
+                ),
+            ]
+        ),
+    )
+
+    actual = TranslationLayer.from_kratos(kratos)
+    assert actual.constraints == [
+        Constraint(
+            node_id=1,
+            translation_by_axis=(True, True, True),
+            rotation_by_axis=(False, False, False),
+        ),
+        Constraint(
+            node_id=1,
+            translation_by_axis=(False, True, True),
+            rotation_by_axis=(False, False, False),
+        ),
+    ]
+
+
+def test_from_kratos__loads():
+    kratos = KratosSimulation(
+        model=Model(
+            nodes={1: Node(0, 0, 0)},
+            sub_models={
+                "load_1": SubModel(nodes=[1]),
+            },
+        ),
+        parameters=SimulationParameters(
+            loads=[KratosLoad(model_part_name="Structure.load_1", modulus=100, direction=(1, 0, 0))]
+        ),
+    )
+
+    actual = TranslationLayer.from_kratos(kratos)
+    assert actual.loads == [Load(node_id=1, modulus=100, direction=(1, 0, 0))]
+
+
+def test_to_nastran__crods():
+    translation = TranslationLayer(
+        connectors=[
+            Truss(
+                first_point_index=1,
+                second_point_index=2,
+                material=Material(),
+                cross_section=Area.zero(),
+            )
+        ],
+    )
+
+    actual = translation.to_nastran()
+    assert actual.bulk_data.crods == [Crod(eid=1, pid=1, g1=1, g2=2)]
+
+
+def test_to_nastran__forces():
+    translation = TranslationLayer(loads=[Load(node_id=5, modulus=40_000, direction=(1, 0, 0))])
+
+    actual = translation.to_nastran()
+    assert actual.bulk_data.forces == [Force(sid=1, g=5, cid=0, f=40_000, n1=1, n2=0, n3=0)]
+
+
+def test_to_nastran__grids():
+    translation = TranslationLayer(
+        nodes=[Point.origin(1), Point(id=1, x=Length(meters=1), y=Length.zero(), z=Length.zero())]
+    )
+
+    actual = translation.to_nastran()
+    assert actual.bulk_data.grids == [
+        Grid(id=1, cp=None, x1=0, x2=0, x3=0),
+        Grid(id=1, cp=None, x1=1000, x2=0, x3=0),
+    ]
+
+
+def test_to_nastran__mat1s():
+    translation = TranslationLayer(
+        connectors=[
+            Truss(
+                first_point_index=0,
+                second_point_index=0,
+                material=Material(name="Steel", young_modulus=Pressure(gigapascal=210)),
+                cross_section=Area.zero(),
+            )
+        ]
+    )
+
+    actual = translation.to_nastran()
+    assert actual.bulk_data.mat1s == [Mat1(mid=1, e=210_000)]
+
+
+def test_to_nastran__prods():
+    translation = TranslationLayer(
+        connectors=[
+            Truss(
+                first_point_index=0,
+                second_point_index=0,
+                material=Material(),
+                cross_section=Area(square_millimeters=50),
+            )
+        ],
+    )
+
+    actual = translation.to_nastran()
+    assert actual.bulk_data.prods == [Prod(pid=1, mid=1, a=50)]
+
+
+def test_to_nastran__spcs():
+    translation = TranslationLayer(
+        constraints=[
+            Constraint(
+                node_id=5,
+                translation_by_axis=(True, False, True),
+                rotation_by_axis=(False, True, False),
+            )
+        ]
+    )
+
+    actual = translation.to_nastran()
+    assert actual.bulk_data.spcs == [Spc(sid=2, g1=5, c1=135, d1=0.0)]
+
+
+def test_to_nastran__case_control():
+    translation = TranslationLayer(loads=[Load(node_id=5, modulus=0, direction=(0, 0, 0))])
+
+    actual = translation.to_nastran()
+    assert actual.case_control == CaseControlSection(
+        general=Subcase(
+            analysis=Analysis.STATICS,
+            displacement=Displacement.ALL,
+            strain=Strain.ALL,
+            stress=Stress.ALL,
+        ),
+        subcases={
+            1: Subcase(
+                analysis=Analysis.STATICS,
+                label="case_1",
+                load=1,
+                spc=2,
+                subtitle="case_1",
+            )
+        },
     )
 
 

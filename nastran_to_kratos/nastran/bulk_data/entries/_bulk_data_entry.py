@@ -43,13 +43,31 @@ class _BulkDataEntry(ABC):
 
         """
         try:
-            field_is_empty = raw_entry[field_index] == " " * 8
+            field_is_empty = raw_entry[field_index] in ["", " " * 8]
         except IndexError:
             field_is_empty = True
 
         if field_is_empty:
             return default_value
         return target_class(raw_entry[field_index].strip())
+
+    @abstractmethod
+    def to_file_content(self) -> str:
+        """Export this entry into a line for saving to a nastran file."""
+        raise NotImplementedError
+
+    def _fields_to_line(self, fields: list[str | float | None]) -> str:
+        line = ""
+        for field in fields:
+            if field is None:
+                line += " " * 8
+            else:
+                field_string = str(field)
+                if field_string.endswith(".0"):
+                    field_string = field_string[:-2]
+
+                line += field_string.rjust(8)
+        return line.rstrip()
 
     @abstractmethod
     def __hash__(self) -> int:
