@@ -191,9 +191,9 @@ def _to_nastran_grids(nodes: list[Point]) -> list[_BulkDataEntry]:
         Grid(
             id=node.id,
             cp=None,
-            x1=node.x.millimeters,
-            x2=node.y.millimeters,
-            x3=node.z.millimeters,
+            x1=node.x,
+            x2=node.y,
+            x3=node.z,
         )
         for node in nodes
     ]
@@ -205,7 +205,7 @@ def _to_nastran_mat1s(connectors: list[Connector]) -> list[_BulkDataEntry]:
         mat1s.append(
             Mat1(
                 mid=i + 1,
-                e=connector.material.young_modulus.megapascal
+                e=connector.material.young_modulus
                 if connector.material.young_modulus is not None
                 else None,
             )
@@ -219,7 +219,7 @@ def _to_nastran_prods(connectors: list[Connector]) -> list[_BulkDataEntry]:
     for i, connector in enumerate(connectors):
         if not isinstance(connector, Truss):
             raise NotImplementedError
-        prods.append(Prod(pid=i + 1, mid=i + 1, a=connector.cross_section.square_millimeters))
+        prods.append(Prod(pid=i + 1, mid=i + 1, a=connector.cross_section))
 
     return prods
 

@@ -1,7 +1,6 @@
 from pathlib import Path
 
 import pytest
-from quantio import Pressure
 
 from nastran_to_kratos.nastran.bulk_data import BulkDataSection
 from nastran_to_kratos.nastran.bulk_data.entries import Mat1
@@ -13,7 +12,7 @@ def test_from_nastran():
     mat1 = Mat1(mid=1, e=210_000)
 
     actual = Material.from_nastran(mat1)
-    assert actual == Material(name="MAT1_1", young_modulus=Pressure(gigapascal=210))
+    assert actual == Material(name="MAT1_1", young_modulus=210_000)
 
 
 def test_materials_from_nastran__two_consecutive_materials():

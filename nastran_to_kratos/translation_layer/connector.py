@@ -3,8 +3,6 @@ from __future__ import annotations
 from abc import ABC
 from dataclasses import dataclass
 
-from quantio import Area
-
 from nastran_to_kratos.kratos import KratosSimulation
 from nastran_to_kratos.kratos.material import KratosMaterial
 from nastran_to_kratos.kratos.model import Element, SubModel
@@ -31,7 +29,7 @@ class Connector(ABC):
 class Truss(Connector):
     """A connector, which can only transfer forces along its primary axis."""
 
-    cross_section: Area
+    cross_section: float
 
     @classmethod
     def from_nastran(cls, crod: Crod, prod: Prod, mat1: Mat1) -> Truss:
@@ -45,7 +43,7 @@ class Truss(Connector):
         return Truss(
             first_point_index=crod.g1,
             second_point_index=crod.g2,
-            cross_section=Area(square_millimeters=prod.a),
+            cross_section=prod.a,
             material=Material.from_nastran(mat1),
         )
 
@@ -57,10 +55,10 @@ class Truss(Connector):
 
     def to_kratos_material(self, truss_id: int) -> KratosMaterial:
         """Export this truss to a kratos material."""
-        variables = {"CROSS_AREA": self.cross_section.square_millimeters, "DENSITY": 0}
+        variables = {"CROSS_AREA": self.cross_section, "DENSITY": 0}
 
         if self.material.young_modulus is not None:
-            variables["YOUNG_MODULUS"] = self.material.young_modulus.megapascal
+            variables["YOUNG_MODULUS"] = self.material.young_modulus
 
         return KratosMaterial(
             model_part_name=f"Structure.truss_{truss_id}",
@@ -103,7 +101,7 @@ def trusses_from_kratos(kratos: KratosSimulation) -> list[Connector]:
             Truss(
                 first_point_index=truss.node_ids[0],
                 second_point_index=truss.node_ids[1],
-                cross_section=Area(square_millimeters=truss_material.variables["CROSS_AREA"]),
+                cross_section=truss_material.variables["CROSS_AREA"],
                 material=Material.from_kratos(truss_material),
             )
         )

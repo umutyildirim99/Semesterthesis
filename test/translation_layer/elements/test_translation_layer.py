@@ -1,7 +1,6 @@
 from pathlib import Path
 
 import pytest
-from quantio import Area, Pressure, Length
 
 from nastran_to_kratos.kratos.kratos_simulation import KratosSimulation
 from nastran_to_kratos.kratos.material import KratosMaterial
@@ -82,13 +81,13 @@ def test_to_kratos__model():
     translation_layer = TranslationLayer(
         nodes=[
             Point.origin(1),
-            Point(2, Length(meters=1), Length.zero(), Length.zero()),
+            Point(2, 1, 0, 0),
         ],
         connectors=[
             Truss(
                 first_point_index=1,
                 second_point_index=2,
-                cross_section=Area.zero(),
+                cross_section=0,
                 material=Material(),
             )
         ],
@@ -110,7 +109,7 @@ def test_to_kratos__model():
     actual = translation_layer.to_kratos()
     assert actual.model == Model(
         properties={0: {}},
-        nodes={1: Node(0, 0, 0), 2: Node(1000, 0, 0)},
+        nodes={1: Node(0, 0, 0), 2: Node(1, 0, 0)},
         elements={"TrussLinearElement3D2N": {1: KratosElement(property_id=0, node_ids=[1, 2])}},
         conditions={"PointLoadCondition2D1N": {1: Condition(property_id=0, node_ids=[1])}},
         sub_models={
@@ -129,20 +128,20 @@ def test_to_kratos__materials():
             Truss(
                 first_point_index=1,
                 second_point_index=2,
-                cross_section=Area(square_millimeters=35),
-                material=Material(name="Steel", young_modulus=Pressure(gigapascal=210)),
+                cross_section=35,
+                material=Material(name="Steel", young_modulus=210_000),
             ),
             Truss(
                 first_point_index=1,
                 second_point_index=2,
-                cross_section=Area(square_millimeters=50),
-                material=Material(name="Steel", young_modulus=Pressure(gigapascal=210)),
+                cross_section=50,
+                material=Material(name="Steel", young_modulus=210_000),
             ),
             Truss(
                 first_point_index=1,
                 second_point_index=1,
-                cross_section=Area(square_millimeters=22),
-                material=Material(name="Aluminum", young_modulus=Pressure(gigapascal=69)),
+                cross_section=22,
+                material=Material(name="Aluminum", young_modulus=69_000),
             ),
         ],
     )
@@ -222,15 +221,15 @@ def test_from_kratos__nodes():
     assert actual.nodes == [
         Point(
             id=1,
-            x=Length(meters=0),
-            y=Length(meters=0),
-            z=Length(meters=0),
+            x=0,
+            y=0,
+            z=0,
         ),
         Point(
             id=2,
-            x=Length(meters=1),
-            y=Length(meters=0),
-            z=Length(meters=0),
+            x=1000,
+            y=0,
+            z=0,
         ),
     ]
 
@@ -260,8 +259,8 @@ def test_from_kratos__connectors():
         Truss(
             first_point_index=1,
             second_point_index=2,
-            cross_section=Area(square_millimeters=35),
-            material=Material(name="Steel", young_modulus=Pressure(gigapascal=210)),
+            cross_section=35,
+            material=Material(name="Steel", young_modulus=210_000),
         )
     ]
 
@@ -330,7 +329,7 @@ def test_to_nastran__crods():
                 first_point_index=1,
                 second_point_index=2,
                 material=Material(),
-                cross_section=Area.zero(),
+                cross_section=0,
             )
         ],
     )
@@ -347,14 +346,12 @@ def test_to_nastran__forces():
 
 
 def test_to_nastran__grids():
-    translation = TranslationLayer(
-        nodes=[Point.origin(1), Point(id=1, x=Length(meters=1), y=Length.zero(), z=Length.zero())]
-    )
+    translation = TranslationLayer(nodes=[Point.origin(1), Point(id=1, x=1, y=0, z=0)])
 
     actual = translation.to_nastran()
     assert actual.bulk_data.grids == [
         Grid(id=1, cp=None, x1=0, x2=0, x3=0),
-        Grid(id=1, cp=None, x1=1000, x2=0, x3=0),
+        Grid(id=1, cp=None, x1=1, x2=0, x3=0),
     ]
 
 
@@ -364,8 +361,8 @@ def test_to_nastran__mat1s():
             Truss(
                 first_point_index=0,
                 second_point_index=0,
-                material=Material(name="Steel", young_modulus=Pressure(gigapascal=210)),
-                cross_section=Area.zero(),
+                material=Material(name="Steel", young_modulus=210_000),
+                cross_section=0,
             )
         ]
     )
@@ -381,7 +378,7 @@ def test_to_nastran__prods():
                 first_point_index=0,
                 second_point_index=0,
                 material=Material(),
-                cross_section=Area(square_millimeters=50),
+                cross_section=50,
             )
         ],
     )

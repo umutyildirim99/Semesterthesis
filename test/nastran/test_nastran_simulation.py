@@ -52,7 +52,13 @@ def x_movable_rod() -> NastranSimulation:
 
 @pytest.fixture
 def x_movable_rod_path() -> Path:
-    return Path(__file__).parent.parent.parent / "examples" / "x_movable_rod.bdf"
+    return (
+        Path(__file__).parent.parent.parent
+        / "examples"
+        / "x_movable_rod"
+        / "nastran"
+        / "x_movable_rod.bdf"
+    )
 
 
 def read_file(path: Path) -> list[str]:

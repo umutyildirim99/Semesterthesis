@@ -2,8 +2,6 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 
-from quantio import Pressure
-
 from nastran_to_kratos.kratos.material import KratosMaterial
 from nastran_to_kratos.nastran.bulk_data import BulkDataSection
 from nastran_to_kratos.nastran.bulk_data.entries import Mat1
@@ -14,14 +12,14 @@ class Material:
     """The material an element is made out of."""
 
     name: str = ""
-    young_modulus: Pressure | None = None
+    young_modulus: float | None = None
 
     @classmethod
     def from_nastran(cls, mat1: Mat1) -> Material:
         """Construct this class from nastran."""
         return Material(
             name=f"MAT1_{mat1.mid}",
-            young_modulus=Pressure(megapascal=mat1.e) if mat1.e is not None else None,
+            young_modulus=mat1.e,
         )
 
     @classmethod
@@ -29,7 +27,7 @@ class Material:
         """Construct this class from kratos."""
         return Material(
             name=kratos.material_name,
-            young_modulus=Pressure(megapascal=kratos.variables["YOUNG_MODULUS"]),
+            young_modulus=kratos.variables["YOUNG_MODULUS"],
         )
 
 
