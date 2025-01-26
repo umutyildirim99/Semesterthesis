@@ -8,7 +8,6 @@ repository = "https://gitlab.lrz.de/tobias_group/nastran_to_kratos"
 
 [tool.poetry.dependencies]
 python = ">=3.10, <3.14"
-quantio = ">=0.18, <1.0"
 
 [tool.poetry.group.dev.dependencies]
 mypy-extensions = "<2.0"

@@ -1,7 +1,6 @@
 from pathlib import Path
 
 import pytest
-from quantio import Area, Pressure
 
 from nastran_to_kratos.nastran.bulk_data import BulkDataSection
 from nastran_to_kratos.nastran.bulk_data.entries import Crod, Prod, Mat1
@@ -21,8 +20,8 @@ def test_truss_from_nastran():
     assert actual == Truss(
         first_point_index=2,
         second_point_index=3,
-        cross_section=Area(square_millimeters=350.0),
-        material=Material(name="MAT1_0", young_modulus=Pressure(megapascal=210_000)),
+        cross_section=350.0,
+        material=Material(name="MAT1_0", young_modulus=210_000),
     )
 
 
