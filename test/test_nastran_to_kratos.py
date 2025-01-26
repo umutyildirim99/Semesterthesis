@@ -18,10 +18,15 @@ def read_file(path: Path) -> list[str]:
     return file_content
 
 
-def test_integration__x_movable_rod(tmp_path):
+@pytest.fixture
+def x_movable_rod_path() -> Path:
+    return Path(__file__).parent.parent / "examples" / "x_movable_rod"
+
+
+def test_integration__x_movable_rod(tmp_path, x_movable_rod_path):
     output_dir = tmp_path / "x_movable_rod"
-    ground_truth_dir = Path(__file__).parent.parent / "examples"
-    nastran_input = ground_truth_dir / "x_movable_rod.bdf"
+    ground_truth_dir = x_movable_rod_path / "kratos"
+    nastran_input = x_movable_rod_path / "nastran" / "x_movable_rod.bdf"
 
     nastran_to_kratos(nastran_input, output_dir)
 

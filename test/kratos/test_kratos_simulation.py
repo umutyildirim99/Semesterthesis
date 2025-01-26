@@ -15,12 +15,12 @@ from nastran_to_kratos.kratos.simulation_parameters import (
 
 @pytest.fixture
 def x_movable_rod_path() -> Path:
-    return Path(__file__).parent.parent.parent / "examples"
+    return Path(__file__).parent.parent.parent / "examples" / "x_movable_rod" / "kratos"
 
 
-def test_write_to_directory__x_movable_rod__model(tmp_path):
+def test_write_to_directory__x_movable_rod__model(tmp_path, x_movable_rod_path):
     output_dir = tmp_path / "x_movable_rod"
-    ground_truth_path = Path(__file__).parent.parent.parent / "examples" / "model.mdpa"
+    ground_truth_path = x_movable_rod_path / "model.mdpa"
 
     kratos_simulation = KratosSimulation(
         model=Model(
@@ -47,9 +47,9 @@ def test_write_to_directory__x_movable_rod__model(tmp_path):
     assert actual == ground_truth
 
 
-def test_write_to_directory__x_movable_rod__materials(tmp_path):
+def test_write_to_directory__x_movable_rod__materials(tmp_path, x_movable_rod_path):
     output_dir = tmp_path / "x_movable_rod"
-    ground_truth_path = Path(__file__).parent.parent.parent / "examples" / "materials.json"
+    ground_truth_path = x_movable_rod_path / "materials.json"
 
     kratos_simulation = KratosSimulation(
         materials=[
@@ -73,11 +73,9 @@ def test_write_to_directory__x_movable_rod__materials(tmp_path):
     assert actual == ground_truth
 
 
-def test_write_to_directory__x_movable_rod__parameters(tmp_path):
+def test_write_to_directory__x_movable_rod__parameters(tmp_path, x_movable_rod_path):
     output_dir = tmp_path / "x_movable_rod"
-    ground_truth_path = (
-        Path(__file__).parent.parent.parent / "examples" / "simulation_parameters.json"
-    )
+    ground_truth_path = x_movable_rod_path / "simulation_parameters.json"
 
     kratos_simulation = KratosSimulation(
         parameters=SimulationParameters(

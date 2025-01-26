@@ -30,12 +30,14 @@ def remove_unimportant_lines(lines: list[str]) -> list[str]:
 
 
 def test_integration__x_movable_rod(tmp_path):
-    x_movable_rod_dir = Path(__file__).parent.parent / "examples"
+    x_movable_rod_dir = Path(__file__).parent.parent / "examples" / "x_movable_rod"
     output_file = tmp_path / "x_movable_rod.bdf"
 
-    kratos_to_nastran(x_movable_rod_dir, output_file)
+    kratos_to_nastran(x_movable_rod_dir / "kratos", output_file)
 
-    ground_truth = remove_unimportant_lines(read_file(x_movable_rod_dir / "x_movable_rod.bdf"))
+    ground_truth = remove_unimportant_lines(
+        read_file(x_movable_rod_dir / "nastran" / "x_movable_rod.bdf")
+    )
     actual = remove_unimportant_lines(read_file(output_file))
     p = str(tmp_path)
     assert actual
