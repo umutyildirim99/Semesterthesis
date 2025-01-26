@@ -41,6 +41,7 @@ ignore = [
 
     "SIM103",  # less readable in some cases imo
 ]
+pydocstyle.convention = "google"
 
 [tool.mypy]
 check_untyped_defs = true
