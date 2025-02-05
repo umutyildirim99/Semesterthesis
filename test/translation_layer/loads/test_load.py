@@ -1,7 +1,6 @@
 from pathlib import Path
 
 import pytest
-from quantio import Area
 
 from nastran_to_kratos.nastran.bulk_data import BulkDataSection
 from nastran_to_kratos.nastran.bulk_data.entries import Force

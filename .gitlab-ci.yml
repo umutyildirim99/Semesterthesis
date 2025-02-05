@@ -2,18 +2,35 @@
 
 stages:
     - pre-commit
+    - verify-kratos
 
 pre-commit:
     stage: pre-commit
     image: python:3.12
     before_script:
-        - pip install pre-commit
-        - pre-commit install
-
         - python3 -m venv .venv
         - source .venv/bin/activate
+
         - pip install poetry
         - poetry install
+
+        - pip install pre-commit
+        - pre-commit install
     script:
         - pre-commit run --all-files
+    allow_failure: false
+
+verify-kratos:
+    stage: verify-kratos
+    image: python:3.12
+    before_script:
+        - python3 -m venv .venv
+        - source .venv/bin/activate
+
+        - pip install poetry
+        - poetry install
+
+        - python -m pip install KratosMultiphysics-all
+    script:
+        - python3 test/verify_kratos.py
     allow_failure: false
