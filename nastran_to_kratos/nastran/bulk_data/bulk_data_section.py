@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 
-from .entries import Crod, Force, Grid, Mat1, Prod, Spc, _BulkDataEntry
+from .entries import Crod, Force, Grid, Mat1, Prod, Rbe2, Spc, _BulkDataEntry
 
 
 @dataclass
@@ -47,7 +47,7 @@ class BulkDataSection:
         return BulkDataSection(entries=[])
 
     @classmethod
-    def from_file_content(cls, file_content: list[str]) -> BulkDataSection:
+    def from_file_content(cls, file_content: list[str]) -> BulkDataSection:  # noqa: C901
         """Construct this class from the contents of a nastran file."""
         bulk_data = BulkDataSection.empty()
 
@@ -68,6 +68,8 @@ class BulkDataSection:
                     processed_entry = Prod.from_file_content(_split_short_line(line))
                 case "SPC":
                     processed_entry = Spc.from_file_content(_split_short_line(line))
+                case "RBE2":
+                    processed_entry = Rbe2.from_file_content(_split_short_line(line))
 
                 case "SOL" | "CEND" | "BEGIN" | "ENDDATA" | "PARAM":
                     pass

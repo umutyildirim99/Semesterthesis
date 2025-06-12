@@ -1,0 +1,7 @@
+$ Simple BDF with one RBE2
+GRID,1,,0.0,0.0,0.0
+GRID,2,,1.0,0.0,0.0
+GRID,3,,0.0,1.0,0.0
+
+RBE2,100,1,123,2,3
+ENDDATA
